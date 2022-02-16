@@ -1,4 +1,4 @@
-package com.wasp.onlineStore.controller;
+package com.wasp.online_store.controller;
 
 import java.sql.Connection;
 import java.sql.DriverManager;

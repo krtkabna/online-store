@@ -1,22 +1,23 @@
-package com.wasp.onlineStore.model;
+package com.wasp.online_store.model;
 
-import org.postgresql.util.PGmoney;
+import java.math.BigDecimal;
+import java.math.RoundingMode;
 import java.util.Date;
 
 public class Product {
     private int id;
     private String name;
-    private PGmoney price;
+    private double price;
     private Date creationDate;
 
-    public Product(int id, String name, PGmoney price, Date creationDate) {
+    public Product() {
+    }
+
+    public Product(int id, String name, double price, Date creationDate) {
         this.id = id;
         this.name = name;
         this.price = price;
         this.creationDate = creationDate;
-    }
-
-    public Product() {
     }
 
     public int getId() {
@@ -35,12 +36,12 @@ public class Product {
         this.name = name;
     }
 
-    public PGmoney getPrice() {
+    public double getPrice() {
         return price;
     }
 
-    public void setPrice(PGmoney price) {
-        this.price = price;
+    public void setPrice(double price) {
+        this.price = roundPrice(price);
     }
 
     public Date getCreationDate() {
@@ -49,5 +50,16 @@ public class Product {
 
     public void setCreationDate(Date creationDate) {
         this.creationDate = creationDate;
+    }
+
+    private double roundPrice(double price) {
+        return BigDecimal.valueOf(price).setScale(2, RoundingMode.FLOOR).doubleValue();
+    }
+
+    @Override
+    public String toString() {
+        return "Product{" +
+            "name='" + name + '\'' + ", price=" + price +
+            '}';
     }
 }

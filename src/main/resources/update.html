@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css"
+          integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm" crossorigin="anonymous">
+    <title>Delete</title>
+</head>
+<body>
+<div class="input-group input-group-lg mx-auto" style="width: 500px; padding-top: 50px;">
+    <div class="input-group-prepend">
+        <span class="input-group-text">Id: ${id}</span>
+    </div>
+    <input type="text" min="0" class="form-control" name="name" id="name"
+           placeholder="Name">
+    <input type="number" min="0.0" class="form-control" name="price" id="price"
+           placeholder="Price">
+    <div class="input-group-append">
+        <button class="btn btn-outline-secondary" type="button" onclick="update()">Update</button>
+    </div>
+</div>
+<script>
+    function update() {
+        let url = 'http://localhost:8080/products/update';
+        let name = document.getElementById('name').value;
+        let price = document.getElementById('price').value;
+        console.log(id);
+        fetch(url + "?id=" + id, {
+            method: 'PUT'
+        }).then(() => {
+            console.log('removed');
+        }).catch(err => {
+            console.error(err)
+        })
+    };
+</script>
+</body>
+</html>

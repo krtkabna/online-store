@@ -1,4 +1,4 @@
-package com.wasp.onlineStore.service;
+package com.wasp.online_store.service;
 
 import freemarker.template.Configuration;
 import freemarker.template.Template;
