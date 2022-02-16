@@ -11,7 +11,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class ProductDao {
-    private static final String SELECT_ALL = "SELECT * FROM products;";
+    private static final String SELECT_ALL = "SELECT * FROM products ORDER BY id ASC;";
     private static final String INSERT_ALL_FIELDS = "INSERT INTO products (name, price, id) VALUES (?, ?, ?);";
     private static final String INSERT_NAME_PRICE = "INSERT INTO products (name, price) VALUES (?, ?);";
     private static final String DELETE_BY_ID = "DELETE FROM products WHERE id=?;";

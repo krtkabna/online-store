@@ -3,7 +3,6 @@ package com.wasp.online_store.servlet;
 import com.wasp.online_store.model.Product;
 import com.wasp.online_store.service.PageGenerator;
 import com.wasp.online_store.service.ProductService;
-import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -19,7 +18,7 @@ public class ProductAddServlet extends HttpServlet {
     }
 
     @Override
-    protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
+    protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws IOException {
         Map<String, Object> data = createPageVariablesMap(getPageVariables(req));
 
         resp.getWriter().println(PageGenerator.getPage("add.html", data));
