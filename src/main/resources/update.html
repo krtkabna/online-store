@@ -9,26 +9,30 @@
 <body>
 <div class="input-group input-group-lg mx-auto" style="width: 500px; padding-top: 50px;">
     <div class="input-group-prepend">
-        <span class="input-group-text">Id: ${product.id}</span>
+        <div class="input-group-text" name="id" id="id">${product.id}</div>
     </div>
     <input type="text" min="0" class="form-control" name="name" id="name"
-           value="%{product.name}">
+    value="${product.name}">
     <input type="number" min="0.0" class="form-control" name="price" id="price"
-           value="${product.price}">
+    value="${product.price}">
     <div class="input-group-append">
         <button class="btn btn-outline-secondary" type="button" onclick="update()">Update</button>
     </div>
 </div>
 <script>
     function update() {
-        let url = 'http://localhost:8080/update';
+        let id = document.getElementById('id').textContent;
+        let url = '/update/' + id;
         let name = document.getElementById('name').value;
         let price = document.getElementById('price').value;
-        console.log(id);
-        fetch(url + "?id=" + id, {
-            method: 'PUT'
+        console.log(id.value, name, price);
+        fetch(url, {
+            method: 'PUT',
+            body: JSON.stringify({'id': id, 'name': name, 'price': price})
+        }).then(result => {
+            console.log('Success:', result);
         }).then(() => {
-            console.log('removed');
+            window.location.assign('/')
         }).catch(err => {
             console.error(err)
         })

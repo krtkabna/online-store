@@ -2,15 +2,16 @@ package com.wasp.onlinestore.web;
 
 import com.wasp.onlinestore.entity.Product;
 import com.wasp.onlinestore.service.ProductService;
-import com.wasp.onlinestore.web.util.*;
+import com.wasp.onlinestore.web.util.PageGenerator;
+import com.wasp.onlinestore.web.util.ProductMapper;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.util.Map;
 
-import static com.wasp.onlinestore.web.util.ProductPageVariablesMapper.createPageVariablesMap;
-import static com.wasp.onlinestore.web.util.ProductPageVariablesMapper.getPageVariables;
+import static com.wasp.onlinestore.web.util.ProductPageVariablesMapper.createFieldsMap;
+import static com.wasp.onlinestore.web.util.ProductPageVariablesMapper.getFields;
 
 public class ProductAddServlet extends HttpServlet {
     private final ProductService productService;
@@ -21,7 +22,7 @@ public class ProductAddServlet extends HttpServlet {
 
     @Override
     protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws IOException {
-        Map<String, Object> data = createPageVariablesMap(getPageVariables(req));
+        Map<String, Object> data = createFieldsMap(getFields(req));
 
         resp.getWriter().println(PageGenerator.getPage("add.html", data));
         resp.setStatus(HttpServletResponse.SC_OK);
@@ -29,7 +30,7 @@ public class ProductAddServlet extends HttpServlet {
 
     @Override
     protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws IOException {
-        Product product = ProductMapper.map(getPageVariables(req));
+        Product product = ProductMapper.getProductFromFields(getFields(req));
         boolean success = false;
         if (product != null) {
             success = productService.save(product);

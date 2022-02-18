@@ -8,7 +8,7 @@ import java.io.InputStreamReader;
 import java.util.Properties;
 
 public class PropertyReader {
-    private Properties properties;
+    private final Properties properties;
 
     public PropertyReader(String url) {
         properties = new Properties();
@@ -25,6 +25,6 @@ public class PropertyReader {
     }
 
     public Properties getProperties() {
-        return properties;
+        return new Properties(properties);
     }
 }

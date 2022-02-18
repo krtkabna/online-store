@@ -19,15 +19,6 @@ public class ProductDeleteServlet extends HttpServlet {
     }
 
     @Override
-    protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws IOException {
-        Map<String, Object> data = new HashMap<>();
-        data.put("id", "");
-
-        resp.getWriter().println(PageGenerator.getPage("delete.html", data));
-        resp.setStatus(HttpServletResponse.SC_OK);
-    }
-
-    @Override
     protected void doDelete(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
         int id = Integer.parseInt(req.getParameter("id"));
         boolean deleted = productService.delete(id);

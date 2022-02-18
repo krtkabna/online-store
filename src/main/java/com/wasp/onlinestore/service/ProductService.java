@@ -14,6 +14,10 @@ public class ProductService {
         return productDao.findAll();
     }
 
+    public Product getById(int id) {
+        return productDao.findById(id);
+    }
+
     public boolean save(Product product) {
         return productDao.save(product);
     }
