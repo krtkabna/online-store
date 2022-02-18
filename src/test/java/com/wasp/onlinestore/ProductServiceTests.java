@@ -1,12 +1,11 @@
-package com.wasp.online_store;
+package com.wasp.onlinestore;
 
-import com.wasp.online_store.dao.ProductDao;
-import com.wasp.online_store.model.Product;
-import com.wasp.online_store.service.ProductService;
+import com.wasp.onlinestore.dao.jdbc.JdbcProductDao;
+import com.wasp.onlinestore.entity.Product;
+import com.wasp.onlinestore.service.ProductService;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
@@ -15,24 +14,24 @@ import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
 class ProductServiceTests {
-    private Product product;
+    private Product chair;
     private ProductService productService;
-    private ProductDao mockedDao;
+    private JdbcProductDao mockedDao;
 
     @BeforeEach
     void init() {
-        product = new Product(1, "chair", 10, new Date());
-        mockedDao = mock(ProductDao.class);
+        chair = Product.builder().id(1).name("chair").price(10).build();
+        mockedDao = mock(JdbcProductDao.class);
         productService = new ProductService(mockedDao);
     }
 
     @Test
-    void productServiceGetAll() {
+    void getAll() {
         List<Product> products = new ArrayList<>();
-        products.add(product);
+        products.add(chair);
         when(mockedDao.findAll()).thenReturn(new ArrayList<>(products));
 
-        List<Product> actualProducts = productService.getAll();
+        List<Product> actualProducts = (List<Product>) productService.getAll();
         for (Product expectedProduct : products) {
             assertTrue(actualProducts.remove(expectedProduct));
         }
@@ -41,12 +40,16 @@ class ProductServiceTests {
     }
 
     @Test
-    void productServiceInsert() {
-        ProductDao mockedDao = mock(ProductDao.class);
-        when(mockedDao.insert(product)).thenReturn(true);
+    void save() {
+        when(mockedDao.save(chair)).thenReturn(true);
 
-        ProductService productService = new ProductService(mockedDao);
+        assertTrue(productService.save(chair));
+    }
 
-        assertTrue(productService.insert(product));
+    @Test
+    void delete() {
+        when(mockedDao.delete(chair.getId())).thenReturn(true);
+
+        assertTrue(productService.delete(chair.getId()));
     }
 }

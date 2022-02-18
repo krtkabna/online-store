@@ -1,14 +1,13 @@
-package com.wasp.online_store.servlet;
+package com.wasp.onlinestore.web;
 
-import com.wasp.online_store.model.Product;
-import com.wasp.online_store.service.PageGenerator;
-import com.wasp.online_store.service.ProductService;
+import com.wasp.onlinestore.entity.Product;
+import com.wasp.onlinestore.web.util.PageGenerator;
+import com.wasp.onlinestore.service.ProductService;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 
 public class ProductsServlet extends HttpServlet {
@@ -20,7 +19,7 @@ public class ProductsServlet extends HttpServlet {
 
     @Override
     protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws IOException {
-        List<Product> products = productService.getAll();
+        Iterable<Product> products = productService.getAll();
 
         resp.setStatus(HttpServletResponse.SC_OK);
 

@@ -8,23 +8,25 @@
 </head>
 <body>
 
-<table id="products" class="table table-striped table-bordered">
-    <thead>
-    <tr>
-        <th>Id</th>
-        <th>Name</th>
-        <th>Price</th>
-    </tr>
-    </thead>
-    <tbody>
-    <tr>
+<div class="container">
+    <table id="products" class="table table-striped table-bordered">
+        <thead>
+        <tr>
+            <th>Id</th>
+            <th>Name</th>
+            <th>Price</th>
+        </tr>
+        </thead>
+        <tbody>
         <#list products as product>
-        <td>${product.id}</td>
-        <td>${product.name}</td>
-        <td>$${product.price}</td>
-    </tr>
-    </#list>
-    </tbody>
-</table>
+        <tr>
+            <td>${product.id}</td>
+            <td>${product.name}</td>
+            <td>$${product.price}</td>
+        </tr>
+        </#list>
+    </table>
+</div>
+</tbody>
 </body>
 </html>

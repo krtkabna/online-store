@@ -19,7 +19,7 @@
     </div>
 <script>
     function remove() {
-        let url = 'http://localhost:8080/products/delete';
+        let url = '/delete';
         let id = document.getElementById('id').value;
         console.log(id);
         fetch(url + "?id=" + id, {
