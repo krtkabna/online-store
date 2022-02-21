@@ -1,15 +1,12 @@
 package com.wasp.onlinestore.web;
 
 import com.wasp.onlinestore.service.ProductService;
-import com.wasp.onlinestore.web.util.PageGenerator;
 import javax.servlet.RequestDispatcher;
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
-import java.util.HashMap;
-import java.util.Map;
 
 public class ProductDeleteServlet extends HttpServlet {
     private final ProductService productService;

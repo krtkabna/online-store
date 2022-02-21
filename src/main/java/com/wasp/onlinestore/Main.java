@@ -1,8 +1,8 @@
 package com.wasp.onlinestore;
 
+import com.wasp.onlinestore.config.ConnectionFactory;
 import com.wasp.onlinestore.config.PropertyReader;
 import com.wasp.onlinestore.dao.ProductDao;
-import com.wasp.onlinestore.config.ConnectionFactory;
 import com.wasp.onlinestore.dao.jdbc.JdbcProductDao;
 import com.wasp.onlinestore.service.ProductService;
 import com.wasp.onlinestore.web.ProductAddServlet;
@@ -16,7 +16,6 @@ import java.util.Properties;
 
 public class Main {
     public static void main(String[] args) throws Exception {
-
         //config config
         PropertyReader propertyReader = new PropertyReader("/properties/application.properties");
         Properties properties = propertyReader.getProperties();
@@ -24,6 +23,7 @@ public class Main {
 
         //config dao
         ProductDao productDao = new JdbcProductDao(connectionFactory);
+
         //config service
         ProductService productService = new ProductService(productDao);
 
