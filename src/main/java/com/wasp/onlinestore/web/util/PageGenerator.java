@@ -13,13 +13,13 @@ import java.util.Map;
 
 public class PageGenerator {
     private static final String RESOURCES_PATH = PageGenerator.class.getResource(File.separator).getPath();
-    private static final Configuration cfg = new Configuration(Configuration.VERSION_2_3_30);
+    private static final Configuration CONFIGURATION = new Configuration(Configuration.VERSION_2_3_30);
 
     public static String getPage(String filename, Map<String, ?> data) {
         try {
             Writer writer = new StringWriter();
-            cfg.setTemplateLoader(new FileTemplateLoader(new File(RESOURCES_PATH)));
-            Template template = cfg.getTemplate(filename);
+            CONFIGURATION.setTemplateLoader(new FileTemplateLoader(new File(RESOURCES_PATH)));
+            Template template = CONFIGURATION.getTemplate(filename);
             template.process(data, writer);
             return writer.toString();
         } catch (IOException | TemplateException e) {
