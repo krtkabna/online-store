@@ -1,10 +1,10 @@
 package com.wasp.onlinestore.dao.jdbc;
 
-import com.wasp.onlinestore.config.ConnectionFactory;
 import com.wasp.onlinestore.dao.ProductDao;
 import com.wasp.onlinestore.dao.jdbc.mapper.ProductRowMapper;
 import com.wasp.onlinestore.entity.Product;
 import com.wasp.onlinestore.exception.DataAccessException;
+import javax.sql.DataSource;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
@@ -21,15 +21,15 @@ public class JdbcProductDao implements ProductDao {
     private static final String INSERT_NAME_PRICE = "INSERT INTO products (name, price) VALUES (?, ?);";
     private static final String DELETE_BY_ID = "DELETE FROM products WHERE id=?;";
     private static final String UPDATE_NAME_AND_PRICE = "UPDATE products SET name=?, price=? WHERE id=?;";
-    private ConnectionFactory connectionFactory;
+    private DataSource dataSource;
 
-    public JdbcProductDao(ConnectionFactory connectionFactory) {
-        this.connectionFactory = connectionFactory;
+    public JdbcProductDao(DataSource dataSource) {
+        this.dataSource = dataSource;
     }
 
     @Override
     public List<Product> findAll() {
-        try (Connection connection = connectionFactory.getConnection();
+        try (Connection connection = dataSource.getConnection();
              Statement statement = connection.createStatement()) {
             List<Product> result = new ArrayList<>();
             ResultSet resultSet = statement.executeQuery(SELECT_ALL);
@@ -45,7 +45,7 @@ public class JdbcProductDao implements ProductDao {
 
     @Override
     public Product findById(int id) {
-        try (Connection connection = connectionFactory.getConnection();
+        try (Connection connection = dataSource.getConnection();
              PreparedStatement statement = connection.prepareStatement(SELECT_BY_ID)) {
 
             statement.setInt(1, id);
@@ -65,7 +65,7 @@ public class JdbcProductDao implements ProductDao {
     public boolean save(Product product) {
         boolean hasId = product.getId() != 0;
         String query = hasId ? INSERT_ALL_FIELDS : INSERT_NAME_PRICE;
-        try (Connection connection = connectionFactory.getConnection();
+        try (Connection connection = dataSource.getConnection();
              PreparedStatement statement = connection.prepareStatement(query)) {
             statement.setString(1, product.getName());
             statement.setDouble(2, product.getPrice());
@@ -80,7 +80,7 @@ public class JdbcProductDao implements ProductDao {
 
     @Override
     public int update(Product product) {
-        try (Connection connection = connectionFactory.getConnection();
+        try (Connection connection = dataSource.getConnection();
              PreparedStatement statement = connection.prepareStatement(UPDATE_NAME_AND_PRICE)) {
             statement.setString(1, product.getName());
             statement.setDouble(2, product.getPrice());
@@ -96,7 +96,7 @@ public class JdbcProductDao implements ProductDao {
 
     @Override
     public boolean delete(int id) {
-        try (Connection connection = connectionFactory.getConnection();
+        try (Connection connection = dataSource.getConnection();
              PreparedStatement statement = connection.prepareStatement(DELETE_BY_ID)) {
             statement.setInt(1, id);
             return statement.execute();
