@@ -8,25 +8,22 @@ import org.junit.jupiter.api.Test;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
+import java.util.Optional;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertSame;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
 class ProductServiceTests {
-    private Date date;
     private Product chair;
-    private ProductService productService;
-    private JdbcProductDao mockedDao;
+    private final JdbcProductDao mockedDao = mock(JdbcProductDao.class);
+    private final ProductService productService = new ProductService(mockedDao);
 
     @BeforeEach
     void init() {
-        date = new Date();
+        Date date = new Date();
         chair = Product.builder().id(1).name("chair").price(10).creationDate(date).build();
-        mockedDao = mock(JdbcProductDao.class);
-        productService = new ProductService(mockedDao);
     }
 
     @Test
@@ -45,10 +42,11 @@ class ProductServiceTests {
 
     @Test
     void getById() {
-        when(mockedDao.findById(1)).thenReturn(chair);
+        when(mockedDao.findById(1)).thenReturn(Optional.of(chair));
 
-        assertEquals("chair", productService.getById(1).getName());
-        assertEquals(10, productService.getById(1).getPrice());
+        Product product = productService.getById(1);
+        assertEquals("chair", product.getName());
+        assertEquals(10, product.getPrice());
     }
 
     @Test

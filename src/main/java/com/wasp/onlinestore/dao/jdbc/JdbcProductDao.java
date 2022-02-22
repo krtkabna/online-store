@@ -12,16 +12,17 @@ import java.sql.SQLException;
 import java.sql.Statement;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 
 public class JdbcProductDao implements ProductDao {
     private final static ProductRowMapper PRODUCT_ROW_MAPPER = new ProductRowMapper();
-    private static final String SELECT_ALL = "SELECT * FROM products ORDER BY id ASC;";
-    private static final String SELECT_BY_ID = "SELECT * FROM products WHERE id=?;";
+    private static final String SELECT_ALL = "SELECT id, name, price, creation_date FROM products ORDER BY id ASC;";
+    private static final String SELECT_BY_ID = "SELECT id, name, price FROM products WHERE id=?;";
     private static final String INSERT_ALL_FIELDS = "INSERT INTO products (name, price, id) VALUES (?, ?, ?);";
     private static final String INSERT_NAME_PRICE = "INSERT INTO products (name, price) VALUES (?, ?);";
     private static final String DELETE_BY_ID = "DELETE FROM products WHERE id=?;";
     private static final String UPDATE_NAME_AND_PRICE = "UPDATE products SET name=?, price=? WHERE id=?;";
-    private DataSource dataSource;
+    private final DataSource dataSource;
 
     public JdbcProductDao(DataSource dataSource) {
         this.dataSource = dataSource;
@@ -44,17 +45,16 @@ public class JdbcProductDao implements ProductDao {
     }
 
     @Override
-    public Product findById(int id) {
+    public Optional<Product> findById(int id) {
         try (Connection connection = dataSource.getConnection();
              PreparedStatement statement = connection.prepareStatement(SELECT_BY_ID)) {
 
             statement.setInt(1, id);
             try (ResultSet resultSet = statement.executeQuery()) {
-                Product product = null;
                 if (resultSet.next()) {
-                    product = PRODUCT_ROW_MAPPER.mapRow(resultSet);
+                    return Optional.of(PRODUCT_ROW_MAPPER.mapRow(resultSet));
                 }
-                return product;
+                return Optional.empty();
             }
         } catch (SQLException e) {
             throw new DataAccessException("Could not get product by id: " + id, e);

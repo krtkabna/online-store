@@ -3,6 +3,7 @@ package com.wasp.onlinestore.web;
 import com.wasp.onlinestore.entity.Product;
 import com.wasp.onlinestore.service.ProductService;
 import com.wasp.onlinestore.web.util.PageGenerator;
+import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;

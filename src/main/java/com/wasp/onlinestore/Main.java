@@ -5,6 +5,7 @@ import com.wasp.onlinestore.config.PropertyReader;
 import com.wasp.onlinestore.dao.ProductDao;
 import com.wasp.onlinestore.dao.jdbc.JdbcProductDao;
 import com.wasp.onlinestore.service.ProductService;
+import com.wasp.onlinestore.web.LoginServlet;
 import com.wasp.onlinestore.web.ProductAddServlet;
 import com.wasp.onlinestore.web.ProductDeleteServlet;
 import com.wasp.onlinestore.web.ProductUpdateServlet;
@@ -12,6 +13,8 @@ import com.wasp.onlinestore.web.ProductsServlet;
 import org.eclipse.jetty.server.Server;
 import org.eclipse.jetty.servlet.ServletContextHandler;
 import org.eclipse.jetty.servlet.ServletHolder;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Properties;
 
 public class Main {
@@ -28,13 +31,16 @@ public class Main {
         ProductService productService = new ProductService(productDao);
 
         //config servlet(s)
+        List<String> tokens = new ArrayList<>();
+        LoginServlet loginServlet = new LoginServlet(tokens);
         ProductsServlet productsServlet = new ProductsServlet(productService);
-        ProductAddServlet productAddServlet = new ProductAddServlet(productService);
+        ProductAddServlet productAddServlet = new ProductAddServlet(productService, tokens);
         ProductUpdateServlet productUpdateServlet = new ProductUpdateServlet(productService);
         ProductDeleteServlet productDeleteServlet = new ProductDeleteServlet(productService);
 
         //servlet mapping
         ServletContextHandler contextHandler = new ServletContextHandler(ServletContextHandler.SESSIONS);
+        contextHandler.addServlet(new ServletHolder(loginServlet), "/login");
         contextHandler.addServlet(new ServletHolder(productsServlet), "/");
         contextHandler.addServlet(new ServletHolder(productAddServlet), "/add");
         contextHandler.addServlet(new ServletHolder(productUpdateServlet), "/update/*");
