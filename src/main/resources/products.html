@@ -2,18 +2,18 @@
 <html lang="en" xmlns="http://www.w3.org/1999/html">
 <head>
     <meta charset="UTF-8">
-    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css"
-          integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm" crossorigin="anonymous">
-    <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.7.0/css/all.css"
-          integrity="sha384-lZN37f5QGtY3VHgisS14W3ExzMWZxybE1SJSEsQp9S+oqd12jhcu+A56Ebc1zFSJ" crossorigin="anonymous">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/popper.js/2.9.2/cjs/popper-lite.min.js">
+    <link crossorigin="anonymous" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css"
+          integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm" rel="stylesheet">
+    <link crossorigin="anonymous" href="https://use.fontawesome.com/releases/v5.7.0/css/all.css"
+          integrity="sha384-lZN37f5QGtY3VHgisS14W3ExzMWZxybE1SJSEsQp9S+oqd12jhcu+A56Ebc1zFSJ" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/popper.js/2.9.2/cjs/popper-lite.min.js" rel="stylesheet">
     <link>
     <title>Products</title>
 </head>
 <body>
 
 <div class="container">
-    <table id="products" class="table table-striped table-bordered">
+    <table class="table table-striped table-bordered" id="products">
         <thead>
         <tr>
             <th>Id</th>
@@ -31,7 +31,7 @@
             <td>$${product.price}</td>
             <td>${product.creationDate}</td>
             <td>
-                <a class="btn btn-warning" href="/update/${product.id}">
+                <a class="btn btn-warning" href="/product/update/${product.id}">
                     <i class="fas fa-pen"></i>
                 </a>
                 <a class="btn btn-danger" onclick="remove(${product.id})">
@@ -46,7 +46,7 @@
 <script>
     function remove(id) {
         if (confirm('Do you want to delete this product?')) {
-            let url = '/delete';
+            let url = '/product/delete';
             console.log(id);
             fetch(url + '?id=' + id, {
                 method: 'DELETE'

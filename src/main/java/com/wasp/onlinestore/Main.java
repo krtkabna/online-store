@@ -3,17 +3,24 @@ package com.wasp.onlinestore;
 import com.wasp.onlinestore.config.ConnectionFactory;
 import com.wasp.onlinestore.config.PropertyReader;
 import com.wasp.onlinestore.dao.ProductDao;
+import com.wasp.onlinestore.dao.UserDao;
 import com.wasp.onlinestore.dao.jdbc.JdbcProductDao;
+import com.wasp.onlinestore.dao.jdbc.JdbcUserDao;
 import com.wasp.onlinestore.service.ProductService;
+import com.wasp.onlinestore.service.SecurityService;
 import com.wasp.onlinestore.web.LoginServlet;
 import com.wasp.onlinestore.web.ProductAddServlet;
 import com.wasp.onlinestore.web.ProductDeleteServlet;
 import com.wasp.onlinestore.web.ProductUpdateServlet;
 import com.wasp.onlinestore.web.ProductsServlet;
+import com.wasp.onlinestore.web.security.SecurityFilter;
 import org.eclipse.jetty.server.Server;
+import org.eclipse.jetty.servlet.FilterHolder;
 import org.eclipse.jetty.servlet.ServletContextHandler;
 import org.eclipse.jetty.servlet.ServletHolder;
+import javax.servlet.DispatcherType;
 import java.util.ArrayList;
+import java.util.EnumSet;
 import java.util.List;
 import java.util.Properties;
 
@@ -26,25 +33,30 @@ public class Main {
 
         //config dao
         ProductDao productDao = new JdbcProductDao(connectionFactory);
+        UserDao userDao = new JdbcUserDao(connectionFactory);
 
         //config service
+        List<String> tokens = new ArrayList<>();
         ProductService productService = new ProductService(productDao);
+        SecurityService securityService = new SecurityService(userDao, tokens);
 
         //config servlet(s)
-        List<String> tokens = new ArrayList<>();
-        LoginServlet loginServlet = new LoginServlet(tokens);
+        LoginServlet loginServlet = new LoginServlet(securityService, tokens);
         ProductsServlet productsServlet = new ProductsServlet(productService);
-        ProductAddServlet productAddServlet = new ProductAddServlet(productService, tokens);
+        ProductAddServlet productAddServlet = new ProductAddServlet(productService);
         ProductUpdateServlet productUpdateServlet = new ProductUpdateServlet(productService);
         ProductDeleteServlet productDeleteServlet = new ProductDeleteServlet(productService);
+
+        SecurityFilter securityFilter = new SecurityFilter(tokens);
 
         //servlet mapping
         ServletContextHandler contextHandler = new ServletContextHandler(ServletContextHandler.SESSIONS);
         contextHandler.addServlet(new ServletHolder(loginServlet), "/login");
         contextHandler.addServlet(new ServletHolder(productsServlet), "/");
-        contextHandler.addServlet(new ServletHolder(productAddServlet), "/add");
-        contextHandler.addServlet(new ServletHolder(productUpdateServlet), "/update/*");
-        contextHandler.addServlet(new ServletHolder(productDeleteServlet), "/delete");
+        contextHandler.addServlet(new ServletHolder(productAddServlet), "/product/add");
+        contextHandler.addServlet(new ServletHolder(productUpdateServlet), "/product/update/*");
+        contextHandler.addServlet(new ServletHolder(productDeleteServlet), "/product/delete");
+        contextHandler.addFilter(new FilterHolder(securityFilter), "/product/*", EnumSet.of(DispatcherType.REQUEST));
 
         //start server
         Server server = new Server(8080);

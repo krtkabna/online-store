@@ -16,9 +16,9 @@ import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
 class ProductServiceTests {
-    private Product chair;
     private final JdbcProductDao mockedDao = mock(JdbcProductDao.class);
     private final ProductService productService = new ProductService(mockedDao);
+    private Product chair;
 
     @BeforeEach
     void init() {

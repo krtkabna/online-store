@@ -31,9 +31,9 @@ public class JdbcProductDao implements ProductDao {
     @Override
     public List<Product> findAll() {
         try (Connection connection = dataSource.getConnection();
-             Statement statement = connection.createStatement()) {
+             Statement statement = connection.createStatement();
+             ResultSet resultSet = statement.executeQuery(SELECT_ALL)) {
             List<Product> result = new ArrayList<>();
-            ResultSet resultSet = statement.executeQuery(SELECT_ALL);
             while (resultSet.next()) {
                 Product product = PRODUCT_ROW_MAPPER.mapRowWithDate(resultSet);
                 result.add(product);

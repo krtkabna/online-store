@@ -2,27 +2,27 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css"
-          integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm" crossorigin="anonymous">
+    <link crossorigin="anonymous" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css"
+          integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm" rel="stylesheet">
     <title>Delete</title>
 </head>
 <body>
 <div class="input-group input-group-lg mx-auto" style="width: 500px; padding-top: 50px;">
     <div class="input-group-prepend">
-        <div class="input-group-text" name="id" id="id">${product.id}</div>
+        <div class="input-group-text" id="id" name="id">${product.id}</div>
     </div>
-    <input type="text" min="0" class="form-control" name="name" id="name"
-    value="${product.name}">
-    <input type="number" min="0.0" class="form-control" name="price" id="price"
-    value="${product.price}">
+    <input class="form-control" id="name" min="0" name="name" type="text"
+           value="${product.name}">
+    <input class="form-control" id="price" min="0.0" name="price" type="number"
+           value="${product.price}">
     <div class="input-group-append">
-        <button class="btn btn-outline-secondary" type="button" onclick="update()">Update</button>
+        <button class="btn btn-outline-secondary" onclick="update()" type="button">Update</button>
     </div>
 </div>
 <script>
     function update() {
         let id = document.getElementById('id').textContent;
-        let url = '/update/' + id;
+        let url = '/product/update/' + id;
         let name = document.getElementById('name').value;
         let price = document.getElementById('price').value;
         console.log(id.value, name, price);

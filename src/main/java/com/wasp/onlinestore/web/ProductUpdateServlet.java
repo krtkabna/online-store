@@ -1,6 +1,5 @@
 package com.wasp.onlinestore.web;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
 import com.wasp.onlinestore.entity.Product;
 import com.wasp.onlinestore.exception.ProductNotFoundException;
 import com.wasp.onlinestore.exception.ProductParseException;
@@ -32,7 +31,7 @@ public class ProductUpdateServlet extends HttpServlet {
             resp.getWriter().println(PageGenerator.getPage("update.html", data));
             resp.setStatus(HttpServletResponse.SC_OK);
         } catch (ProductNotFoundException e) {
-            resp.setStatus(HttpServletResponse.SC_BAD_REQUEST);
+            resp.setStatus(HttpServletResponse.SC_NOT_FOUND);
         }
     }
 
@@ -45,7 +44,7 @@ public class ProductUpdateServlet extends HttpServlet {
                 resp.setStatus(HttpServletResponse.SC_OK);
             } else {
                 //todo find a fitting code
-                resp.setStatus(HttpServletResponse.SC_NO_CONTENT);
+                resp.setStatus(HttpServletResponse.SC_NOT_FOUND);
             }
         } catch (ProductParseException e) {
             resp.setStatus(HttpServletResponse.SC_BAD_REQUEST);
