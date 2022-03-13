@@ -1,15 +1,15 @@
 package com.wasp.onlinestore.web.util;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
-import com.fasterxml.jackson.databind.exc.InvalidDefinitionException;
+import com.google.gson.Gson;
+import com.google.gson.JsonParseException;
 import com.wasp.onlinestore.entity.Product;
 import com.wasp.onlinestore.exception.ProductParseException;
-import javax.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletRequest;
 import java.io.IOException;
+import java.io.StringReader;
 import java.util.stream.Collectors;
 
 public class ProductMapper {
-    private static final ObjectMapper OBJECT_MAPPER = new ObjectMapper();
 
     public static Product getProductFromFields(HttpServletRequest req) {
         String id = req.getParameter("id");
@@ -29,9 +29,9 @@ public class ProductMapper {
 
     public static Product getProductFromRequestBody(HttpServletRequest req) throws IOException {
         try {
-            String body = req.getReader().lines().collect(Collectors.joining());
-            return OBJECT_MAPPER.readValue(body, Product.class);
-        } catch (InvalidDefinitionException e) {
+            StringReader body = new StringReader(req.getReader().lines().collect(Collectors.joining()));
+            return new Gson().fromJson(body, Product.class);
+        } catch (JsonParseException e) {
             throw new ProductParseException("Request body structure is invalid or it contains invalid values", e);
         }
     }

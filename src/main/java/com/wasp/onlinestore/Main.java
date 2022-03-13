@@ -14,11 +14,12 @@ import com.wasp.onlinestore.web.ProductDeleteServlet;
 import com.wasp.onlinestore.web.ProductUpdateServlet;
 import com.wasp.onlinestore.web.ProductsServlet;
 import com.wasp.onlinestore.web.security.SecurityFilter;
+import jakarta.servlet.DispatcherType;
 import org.eclipse.jetty.server.Server;
 import org.eclipse.jetty.servlet.FilterHolder;
 import org.eclipse.jetty.servlet.ServletContextHandler;
 import org.eclipse.jetty.servlet.ServletHolder;
-import javax.servlet.DispatcherType;
+import javax.sql.DataSource;
 import java.util.ArrayList;
 import java.util.EnumSet;
 import java.util.List;
@@ -29,7 +30,7 @@ public class Main {
         //config config
         PropertyReader propertyReader = new PropertyReader("/properties/application.properties");
         Properties properties = propertyReader.getProperties();
-        ConnectionFactory connectionFactory = new ConnectionFactory(properties);
+        DataSource connectionFactory = new ConnectionFactory(properties);
 
         //config dao
         ProductDao productDao = new JdbcProductDao(connectionFactory);
@@ -41,7 +42,7 @@ public class Main {
         SecurityService securityService = new SecurityService(userDao, tokens);
 
         //config servlet(s)
-        LoginServlet loginServlet = new LoginServlet(securityService, tokens);
+        LoginServlet loginServlet = new LoginServlet(securityService);
         ProductsServlet productsServlet = new ProductsServlet(productService);
         ProductAddServlet productAddServlet = new ProductAddServlet(productService);
         ProductUpdateServlet productUpdateServlet = new ProductUpdateServlet(productService);

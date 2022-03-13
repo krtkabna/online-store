@@ -1,3 +1,3 @@
 # Online Store
 
-Implement an online store using `javax.servlet` and `JDBC`
+Implement an online store using `jakarta.servlet` and `JDBC`

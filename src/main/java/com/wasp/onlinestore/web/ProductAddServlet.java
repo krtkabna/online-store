@@ -5,9 +5,9 @@ import com.wasp.onlinestore.exception.ProductParseException;
 import com.wasp.onlinestore.service.ProductService;
 import com.wasp.onlinestore.web.util.PageGenerator;
 import com.wasp.onlinestore.web.util.ProductMapper;
-import javax.servlet.http.HttpServlet;
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
+import jakarta.servlet.http.HttpServlet;
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletResponse;
 import java.io.IOException;
 
 public class ProductAddServlet extends HttpServlet {

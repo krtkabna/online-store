@@ -13,6 +13,12 @@
         <maven.compiler.source>11</maven.compiler.source>
         <maven.compiler.target>11</maven.compiler.target>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+        <jetty.version>9.3.0.M0</jetty.version>
+        <mainClass>com.wasp.onlinestore.Main</mainClass>
+        <heroku.appName>wasp-online-store</heroku.appName>
+        <db.url>jdbc:postgresql://localhost:5432/shop</db.url>
+        <db.user>wasp</db.user>
+        <db.pswd>root</db.pswd>
     </properties>
 
     <build>
@@ -22,9 +28,9 @@
                 <artifactId>flyway-maven-plugin</artifactId>
                 <version>8.5.0</version>
                 <configuration>
-                    <url>jdbc:postgresql://localhost:5432/shop</url>
-                    <user>wasp</user>
-                    <password>root</password>
+                    <url>${db.url}</url>
+                    <user>${db.user}</user>
+                    <password>${db.pswd}</password>
                     <schemas>
                         <schema>public</schema>
                     </schemas>
@@ -32,33 +38,35 @@
             </plugin>
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
-                <artifactId>maven-assembly-plugin</artifactId>
-                <version>2.6</version>
-                <configuration>
-                    <descriptorRefs>
-                        <descriptorRef>jar-with-dependencies</descriptorRef>
-                    </descriptorRefs>
-                </configuration>
+                <artifactId>maven-shade-plugin</artifactId>
+                <version>3.2.4</version>
                 <executions>
                     <execution>
-                        <id>assemble-all</id>
                         <phase>package</phase>
                         <goals>
-                            <goal>single</goal>
+                            <goal>shade</goal>
                         </goals>
+                        <configuration>
+                            <createDependencyReducedPom>false</createDependencyReducedPom>
+                            <transformers>
+                                <transformer implementation="org.apache.maven.plugins.shade.resource.ManifestResourceTransformer">
+                                    <mainClass>com.wasp.onlinestore.Main</mainClass>
+                                </transformer>
+                            </transformers>
+                        </configuration>
                     </execution>
                 </executions>
             </plugin>
             <plugin>
-                <groupId>org.apache.maven.plugins</groupId>
-                <artifactId>maven-jar-plugin</artifactId>
+                <groupId>com.heroku.sdk</groupId>
+                <artifactId>heroku-maven-plugin</artifactId>
+                <version>3.0.4</version>
                 <configuration>
-                    <archive>
-                        <manifest>
-                            <addClasspath>true</addClasspath>
-                            <mainClass>src/main/java/com/wasp/onlinestore/Main.java</mainClass>
-                        </manifest>
-                    </archive>
+                    <appName>${heroku.appName}</appName>
+                    <jdkVersion>${maven.compiler.source}</jdkVersion>
+                    <processTypes>
+                        <web>java $JAVA_OPTS -jar target/online-store-1.0-SNAPSHOT.jar</web>
+                    </processTypes>
                 </configuration>
             </plugin>
         </plugins>
@@ -74,12 +82,12 @@
         <dependency>
             <groupId>org.eclipse.jetty</groupId>
             <artifactId>jetty-webapp</artifactId>
-            <version>9.3.0.M0</version>
+            <version>11.0.8</version>
         </dependency>
         <dependency>
             <groupId>org.postgresql</groupId>
             <artifactId>postgresql</artifactId>
-            <version>42.3.2</version>
+            <version>42.3.3</version>
         </dependency>
         <dependency>
             <groupId>org.freemarker</groupId>
@@ -87,9 +95,9 @@
             <version>2.3.31</version>
         </dependency>
         <dependency>
-            <groupId>com.fasterxml.jackson.core</groupId>
-            <artifactId>jackson-databind</artifactId>
-            <version>2.13.0</version>
+            <groupId>com.google.code.gson</groupId>
+            <artifactId>gson</artifactId>
+            <version>2.9.0</version>
         </dependency>
         <dependency>
             <groupId>org.junit.jupiter</groupId>
@@ -106,7 +114,7 @@
         <dependency>
             <groupId>org.jetbrains</groupId>
             <artifactId>annotations</artifactId>
-            <version>RELEASE</version>
+            <version>23.0.0</version>
             <scope>compile</scope>
         </dependency>
     </dependencies>

@@ -1,22 +1,19 @@
 package com.wasp.onlinestore.web;
 
+import com.wasp.onlinestore.exception.DataAccessException;
 import com.wasp.onlinestore.service.SecurityService;
 import com.wasp.onlinestore.web.util.PageGenerator;
-import javax.servlet.http.Cookie;
-import javax.servlet.http.HttpServlet;
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
+import jakarta.servlet.http.Cookie;
+import jakarta.servlet.http.HttpServlet;
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletResponse;
 import java.io.IOException;
-import java.util.List;
-import java.util.UUID;
 
 public class LoginServlet extends HttpServlet {
     private final SecurityService securityService;
-    private final List<String> tokens;
 
-    public LoginServlet(SecurityService securityService, List<String> tokens) {
+    public LoginServlet(SecurityService securityService) {
         this.securityService = securityService;
-        this.tokens = tokens;
     }
 
     @Override
@@ -26,16 +23,16 @@ public class LoginServlet extends HttpServlet {
 
     @Override
     protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws IOException {
-        String login = req.getParameter("login");
-        String password = req.getParameter("password");
-        if (securityService.userExists(login, password)) {
-            String token = UUID.randomUUID().toString();
-            System.out.println(token);
-            tokens.add(token);
-            Cookie cookie = new Cookie("user-token", token);
+        try {
+            String login = req.getParameter("login");
+            String password = req.getParameter("password");
+            if (!securityService.userExists(login, password)) {
+                securityService.saveUser(login, password);
+            }
+            Cookie cookie = new Cookie("user-token", securityService.generateToken());
             resp.addCookie(cookie);
             resp.sendRedirect("/");
-        } else {
+        } catch (DataAccessException e) {
             PageGenerator.writePage("login_failed.html", resp.getWriter());
         }
     }
