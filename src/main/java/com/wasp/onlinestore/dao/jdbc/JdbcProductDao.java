@@ -15,10 +15,9 @@ import java.util.List;
 import java.util.Optional;
 
 public class JdbcProductDao implements ProductDao {
-    private final static ProductRowMapper PRODUCT_ROW_MAPPER = new ProductRowMapper();
+    private static final ProductRowMapper PRODUCT_ROW_MAPPER = new ProductRowMapper();
     private static final String SELECT_ALL = "SELECT id, name, price, creation_date FROM products ORDER BY id ASC;";
     private static final String SELECT_BY_ID = "SELECT id, name, price FROM products WHERE id=?;";
-    private static final String INSERT_ALL_FIELDS = "INSERT INTO products (name, price, id) VALUES (?, ?, ?);";
     private static final String INSERT_NAME_PRICE = "INSERT INTO products (name, price) VALUES (?, ?);";
     private static final String DELETE_BY_ID = "DELETE FROM products WHERE id=?;";
     private static final String UPDATE_NAME_AND_PRICE = "UPDATE products SET name=?, price=? WHERE id=?;";
@@ -63,18 +62,13 @@ public class JdbcProductDao implements ProductDao {
 
     @Override
     public boolean save(Product product) {
-        boolean hasId = product.getId() != 0;
-        String query = hasId ? INSERT_ALL_FIELDS : INSERT_NAME_PRICE;
         try (Connection connection = dataSource.getConnection();
-             PreparedStatement statement = connection.prepareStatement(query)) {
+             PreparedStatement statement = connection.prepareStatement(INSERT_NAME_PRICE)) {
             statement.setString(1, product.getName());
             statement.setDouble(2, product.getPrice());
-            if (hasId) {
-                statement.setInt(3, product.getId());
-            }
             return statement.execute();
         } catch (SQLException e) {
-            throw new DataAccessException("SQL error occurred on INSERT: " + query, e);
+            throw new DataAccessException("SQL error occurred on INSERT: " + INSERT_NAME_PRICE, e);
         }
     }
 
@@ -85,8 +79,7 @@ public class JdbcProductDao implements ProductDao {
             statement.setString(1, product.getName());
             statement.setDouble(2, product.getPrice());
             statement.setInt(3, product.getId());
-            int res = statement.executeUpdate();
-            return res;
+            return statement.executeUpdate();
         } catch (
             SQLException e) {
             throw new DataAccessException("SQL error occurred on UPDATE: " + UPDATE_NAME_AND_PRICE, e);

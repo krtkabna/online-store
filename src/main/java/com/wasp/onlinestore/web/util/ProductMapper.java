@@ -11,13 +11,15 @@ import java.util.stream.Collectors;
 
 public class ProductMapper {
 
+    private ProductMapper() {
+        throw new UnsupportedOperationException();
+    }
+
     public static Product getProductFromFields(HttpServletRequest req) {
-        String id = req.getParameter("id");
         String name = req.getParameter("name");
         String price = req.getParameter("price");
         try {
             return Product.builder()
-                .id(Integer.parseInt(id))
                 .name(name)
                 .price(Double.parseDouble(price))
                 .build();
