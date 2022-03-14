@@ -12,6 +12,7 @@ import com.wasp.onlinestore.web.ProductAddServlet;
 import com.wasp.onlinestore.web.ProductDeleteServlet;
 import com.wasp.onlinestore.web.ProductUpdateServlet;
 import com.wasp.onlinestore.web.ProductsServlet;
+import com.wasp.onlinestore.web.RegisterServlet;
 import com.wasp.onlinestore.web.security.SecurityFilter;
 import jakarta.servlet.DispatcherType;
 import org.eclipse.jetty.server.Server;
@@ -42,6 +43,7 @@ public class Main {
         SecurityService securityService = new SecurityService(userDao);
 
         //config servlet(s)
+        RegisterServlet registerServlet = new RegisterServlet(securityService);
         LoginServlet loginServlet = new LoginServlet(securityService);
         ProductsServlet productsServlet = new ProductsServlet(productService);
         ProductAddServlet productAddServlet = new ProductAddServlet(productService);
@@ -52,6 +54,7 @@ public class Main {
 
         //servlet mapping
         ServletContextHandler contextHandler = new ServletContextHandler(ServletContextHandler.SESSIONS);
+        contextHandler.addServlet(new ServletHolder(registerServlet), "/register");
         contextHandler.addServlet(new ServletHolder(loginServlet), "/login");
         contextHandler.addServlet(new ServletHolder(productsServlet), "/");
         contextHandler.addServlet(new ServletHolder(productAddServlet), "/product/add");

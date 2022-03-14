@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <title>Login</title>
+    <title>Login Failed</title>
     <meta charset="utf-8">
     <meta content="width=device-width, initial-scale=1" name="viewport">
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/css/bootstrap.min.css" rel="stylesheet">
@@ -9,17 +9,16 @@
         .form-signin {
             padding-top: 50px;
             alignment: center;
-            max-width: 400px;
+            max-width: 333px;
         }
     </style>
 </head>
-<body>
+<body class="text-center">
+
 <div class="container mt-3 form-signin">
     <form class="mx-auto" action="/login" method="POST">
-        <div class="text-center">
-            <img class="mb-4" src="https://cdn-icons-png.flaticon.com/128/235/235426.png" alt="" width="72" height="72">
-            <h2>Please sign in</h2>
-        </div>
+        <img class="mb-4" src="https://cdn-icons-png.flaticon.com/128/235/235426.png" alt="" width="72" height="72">
+        <h2>Please sign in</h2>
         <div class="form-floating mt-3 mb-3">
             <input class="form-control" id="login" name="login" placeholder="Enter login" type="text">
             <label for="login">Login</label>
@@ -28,12 +27,9 @@
             <input class="form-control" id="password" name="password" placeholder="Enter password" type="password">
             <label for="password">Password</label>
         </div>
-        <div class="alert alert-danger alert-dismissible alert-sm fade show" role="alert" style="line-height:40px; padding:0px 15px;">
-            No user found with these credentials, try again
-        </div>
         <button class="btn btn-primary btn-lg w-100" type="submit">Submit</button>
     </form>
 </div>
+
 </body>
 </html>
-
