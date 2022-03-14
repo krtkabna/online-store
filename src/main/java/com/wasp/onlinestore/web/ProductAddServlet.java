@@ -12,15 +12,17 @@ import java.io.IOException;
 
 public class ProductAddServlet extends HttpServlet {
     private final ProductService productService;
+    private final PageGenerator pageGenerator;
 
     public ProductAddServlet(ProductService productService) {
         this.productService = productService;
+        this.pageGenerator = new PageGenerator();
     }
 
     @Override
     protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws IOException {
         resp.setStatus(HttpServletResponse.SC_OK);
-        PageGenerator.writePage("add.html", resp.getWriter());
+        pageGenerator.writePage("add.html", resp.getWriter());
     }
 
     @Override

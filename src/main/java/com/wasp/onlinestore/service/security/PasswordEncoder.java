@@ -1,4 +1,4 @@
-package com.wasp.onlinestore.service;
+package com.wasp.onlinestore.service.security;
 
 import java.nio.charset.StandardCharsets;
 import java.security.MessageDigest;

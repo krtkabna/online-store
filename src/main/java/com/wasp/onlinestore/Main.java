@@ -1,13 +1,12 @@
 package com.wasp.onlinestore;
 
-import com.wasp.onlinestore.config.ConnectionFactory;
 import com.wasp.onlinestore.config.PropertyReader;
 import com.wasp.onlinestore.dao.ProductDao;
 import com.wasp.onlinestore.dao.UserDao;
 import com.wasp.onlinestore.dao.jdbc.JdbcProductDao;
 import com.wasp.onlinestore.dao.jdbc.JdbcUserDao;
 import com.wasp.onlinestore.service.ProductService;
-import com.wasp.onlinestore.service.SecurityService;
+import com.wasp.onlinestore.service.security.SecurityService;
 import com.wasp.onlinestore.web.LoginServlet;
 import com.wasp.onlinestore.web.ProductAddServlet;
 import com.wasp.onlinestore.web.ProductDeleteServlet;
@@ -19,10 +18,8 @@ import org.eclipse.jetty.server.Server;
 import org.eclipse.jetty.servlet.FilterHolder;
 import org.eclipse.jetty.servlet.ServletContextHandler;
 import org.eclipse.jetty.servlet.ServletHolder;
-import javax.sql.DataSource;
-import java.util.ArrayList;
+import org.postgresql.ds.PGSimpleDataSource;
 import java.util.EnumSet;
-import java.util.List;
 import java.util.Properties;
 
 public class Main {
@@ -30,16 +27,19 @@ public class Main {
         //config config
         PropertyReader propertyReader = new PropertyReader("/properties/application.properties");
         Properties properties = propertyReader.getProperties();
-        DataSource connectionFactory = new ConnectionFactory(properties);
+
+        PGSimpleDataSource pgSimpleDataSource = new PGSimpleDataSource();
+        pgSimpleDataSource.setUrl(properties.getProperty("db_url"));
+        pgSimpleDataSource.setUser(properties.getProperty("username"));
+        pgSimpleDataSource.setPassword(properties.getProperty("password"));
 
         //config dao
-        ProductDao productDao = new JdbcProductDao(connectionFactory);
-        UserDao userDao = new JdbcUserDao(connectionFactory);
+        ProductDao productDao = new JdbcProductDao(pgSimpleDataSource);
+        UserDao userDao = new JdbcUserDao(pgSimpleDataSource);
 
         //config service
-        List<String> tokens = new ArrayList<>();
         ProductService productService = new ProductService(productDao);
-        SecurityService securityService = new SecurityService(userDao, tokens);
+        SecurityService securityService = new SecurityService(userDao);
 
         //config servlet(s)
         LoginServlet loginServlet = new LoginServlet(securityService);
@@ -48,7 +48,7 @@ public class Main {
         ProductUpdateServlet productUpdateServlet = new ProductUpdateServlet(productService);
         ProductDeleteServlet productDeleteServlet = new ProductDeleteServlet(productService);
 
-        SecurityFilter securityFilter = new SecurityFilter(tokens);
+        SecurityFilter securityFilter = new SecurityFilter(securityService);
 
         //servlet mapping
         ServletContextHandler contextHandler = new ServletContextHandler(ServletContextHandler.SESSIONS);

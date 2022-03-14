@@ -12,13 +12,15 @@ import java.io.IOException;
 import java.util.HashMap;
 import java.util.Map;
 
-import static com.wasp.onlinestore.web.util.ProductMapper.getProductFromRequestBody;
+import static com.wasp.onlinestore.web.util.ProductMapper.*;
 
 public class ProductUpdateServlet extends HttpServlet {
     private final ProductService productService;
+    private final PageGenerator pageGenerator;
 
     public ProductUpdateServlet(ProductService productService) {
         this.productService = productService;
+        this.pageGenerator = new PageGenerator();
     }
 
     @Override
@@ -28,7 +30,7 @@ public class ProductUpdateServlet extends HttpServlet {
             Product product = productService.getById(id);
             Map<String, Object> data = new HashMap<>();
             data.put("product", product);
-            resp.getWriter().println(PageGenerator.getPage("update.html", data));
+            pageGenerator.writePage("update.html", resp.getWriter(), data);
             resp.setStatus(HttpServletResponse.SC_OK);
         } catch (ProductNotFoundException e) {
             resp.setStatus(HttpServletResponse.SC_NOT_FOUND);

@@ -12,9 +12,11 @@ import java.util.Map;
 
 public class ProductsServlet extends HttpServlet {
     private final ProductService productService;
+    private final PageGenerator pageGenerator;
 
     public ProductsServlet(ProductService productService) {
         this.productService = productService;
+        this.pageGenerator = new PageGenerator();
     }
 
     @Override
@@ -26,7 +28,6 @@ public class ProductsServlet extends HttpServlet {
         Map<String, Object> pageVariables = new HashMap<>();
         pageVariables.put("products", products);
 
-        String page = PageGenerator.getPage("products.html", pageVariables);
-        resp.getWriter().println(page);
+        pageGenerator.writePage("products.html", resp.getWriter(), pageVariables);
     }
 }

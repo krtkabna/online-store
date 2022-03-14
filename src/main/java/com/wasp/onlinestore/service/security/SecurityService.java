@@ -1,10 +1,8 @@
-package com.wasp.onlinestore.service;
+package com.wasp.onlinestore.service.security;
 
 import com.wasp.onlinestore.dao.UserDao;
-import java.security.MessageDigest;
-import java.security.NoSuchAlgorithmException;
+import java.util.ArrayList;
 import java.util.List;
-import java.util.Random;
 import java.util.UUID;
 
 public class SecurityService {
@@ -12,12 +10,13 @@ public class SecurityService {
     private List<String> tokens;
     private PasswordEncoder passwordEncoder;
 
-    public SecurityService(UserDao userDao, List<String> tokens) {
+    public SecurityService(UserDao userDao) {
         this.userDao = userDao;
-        this.tokens = tokens;
+        this.tokens = new ArrayList<>();
         this.passwordEncoder = new PasswordEncoder();
     }
 
+    //check salted password in base
     public boolean userExists(String name, String password) {
         return userDao.userExists(name, password);
     }
@@ -33,4 +32,14 @@ public class SecurityService {
         return userDao.saveUser(login, hashedPassword);
     }
 
+    public boolean isTokenValid(String value) {
+        return tokens.contains(value);
+    }
+
+    public String login(String login, String password) {
+        if (!userExists(login, password)) {
+            saveUser(login, password);
+        }
+        return generateToken();
+    }
 }

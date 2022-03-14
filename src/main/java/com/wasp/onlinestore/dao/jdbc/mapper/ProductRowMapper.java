@@ -3,7 +3,7 @@ package com.wasp.onlinestore.dao.jdbc.mapper;
 import com.wasp.onlinestore.entity.Product;
 import java.sql.ResultSet;
 import java.sql.SQLException;
-import java.util.Date;
+import java.time.LocalDateTime;
 
 public class ProductRowMapper {
 
@@ -23,7 +23,7 @@ public class ProductRowMapper {
         int id = resultSet.getInt("id");
         String name = resultSet.getString("name");
         double price = resultSet.getDouble("price");
-        Date creationDate = resultSet.getDate("creation_date");
+        LocalDateTime creationDate = resultSet.getTimestamp("creation_date").toLocalDateTime();
 
         return Product.builder()
             .id(id)

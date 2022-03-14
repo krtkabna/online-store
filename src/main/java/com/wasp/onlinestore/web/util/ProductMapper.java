@@ -5,17 +5,16 @@ import com.google.gson.JsonParseException;
 import com.wasp.onlinestore.entity.Product;
 import com.wasp.onlinestore.exception.ProductParseException;
 import jakarta.servlet.http.HttpServletRequest;
+import lombok.experimental.UtilityClass;
 import java.io.IOException;
 import java.io.StringReader;
 import java.util.stream.Collectors;
 
+@UtilityClass
 public class ProductMapper {
+    public static final Gson GSON = new Gson();
 
-    private ProductMapper() {
-        throw new UnsupportedOperationException();
-    }
-
-    public static Product getProductFromFields(HttpServletRequest req) {
+    public Product getProductFromFields(HttpServletRequest req) {
         String name = req.getParameter("name");
         String price = req.getParameter("price");
         try {
@@ -29,10 +28,11 @@ public class ProductMapper {
 
     }
 
-    public static Product getProductFromRequestBody(HttpServletRequest req) throws IOException {
+    public Product getProductFromRequestBody(HttpServletRequest req) throws IOException {
         try {
             StringReader body = new StringReader(req.getReader().lines().collect(Collectors.joining()));
-            return new Gson().fromJson(body, Product.class);
+            //use jackson
+            return GSON.fromJson(body, Product.class);
         } catch (JsonParseException e) {
             throw new ProductParseException("Request body structure is invalid or it contains invalid values", e);
         }

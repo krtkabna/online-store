@@ -1,5 +1,6 @@
 package com.wasp.onlinestore.web.security;
 
+import com.wasp.onlinestore.service.security.SecurityService;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.FilterConfig;
 import jakarta.servlet.ServletException;
@@ -10,13 +11,12 @@ import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.util.Arrays;
-import java.util.List;
 
 public class SecurityFilter implements jakarta.servlet.Filter {
-    private List<String> tokens;
+    private SecurityService securityService;
 
-    public SecurityFilter(List<String> tokens) {
-        this.tokens = tokens;
+    public SecurityFilter(SecurityService securityService) {
+        this.securityService = securityService;
     }
 
     @Override
@@ -31,9 +31,7 @@ public class SecurityFilter implements jakarta.servlet.Filter {
 
         Cookie[] cookies = httpServletRequest.getCookies();
 
-        boolean isAuthorized = cookies != null && Arrays.stream(cookies)
-            .filter(cookie -> "user-token".equals(cookie.getName()))
-            .anyMatch(cookie -> tokens.contains(cookie.getValue()));
+        boolean isAuthorized = (cookies != null) && isTokenValid(cookies);
 
         if (!isAuthorized) {
             httpServletResponse.sendRedirect("/login");
@@ -41,6 +39,12 @@ public class SecurityFilter implements jakarta.servlet.Filter {
         }
 
         chain.doFilter(request, response);
+    }
+
+    private boolean isTokenValid(Cookie[] cookies) {
+        return Arrays.stream(cookies)
+            .filter(cookie -> "user-token".equals(cookie.getName()))
+            .anyMatch(cookie -> securityService.isTokenValid(cookie.getValue()));
     }
 
     @Override

@@ -5,8 +5,8 @@ import com.wasp.onlinestore.entity.Product;
 import com.wasp.onlinestore.service.ProductService;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import java.time.LocalDateTime;
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.List;
 import java.util.Optional;
 
@@ -22,8 +22,8 @@ class ProductServiceTests {
 
     @BeforeEach
     void init() {
-        Date date = new Date();
-        chair = Product.builder().id(1).name("chair").price(10).creationDate(date).build();
+        LocalDateTime localDateTime = LocalDateTime.now();
+        chair = Product.builder().id(1).name("chair").price(10).creationDate(localDateTime).build();
     }
 
     @Test
