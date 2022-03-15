@@ -13,8 +13,7 @@
         }
     </style>
 </head>
-<body class="text-center">
-
+<body>
 <div class="container mt-3 form-signin">
     <form class="mx-auto" action="/register" method="POST">
         <img class="mb-4" src="https://media.istockphoto.com/vectors/honeycomb-bee-icon-on-white-background-honeycomb-icon-for-your-web-vector-id1053125290?k=20&m=1053125290&s=612x612&w=0&h=2wVT8SWhJww4p-PD9sLXNnG-zkm_lLYXPCu7K2VFkhM=" alt="" width="72" height="72">
@@ -26,6 +25,10 @@
         <div class="form-floating mt-3 mb-3">
             <input class="form-control" id="password" name="password" placeholder="Enter password" type="password">
             <label for="password">Password</label>
+        </div>
+        <div class="form-check mt-3 mb-3">
+            <input type="checkbox" class="form-check-input" id="admin" name="admin">
+            <label class="form-check-label" for="admin">Admin</label>
         </div>
         <button class="btn btn-success btn-lg w-100" type="submit">Sign Up</button>
     </form>

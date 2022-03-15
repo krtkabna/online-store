@@ -7,6 +7,7 @@ import com.wasp.onlinestore.dao.jdbc.JdbcProductDao;
 import com.wasp.onlinestore.dao.jdbc.JdbcUserDao;
 import com.wasp.onlinestore.service.ProductService;
 import com.wasp.onlinestore.service.security.SecurityService;
+import com.wasp.onlinestore.web.CartServlet;
 import com.wasp.onlinestore.web.LoginServlet;
 import com.wasp.onlinestore.web.ProductAddServlet;
 import com.wasp.onlinestore.web.ProductDeleteServlet;
@@ -15,6 +16,7 @@ import com.wasp.onlinestore.web.ProductsServlet;
 import com.wasp.onlinestore.web.RegisterServlet;
 import com.wasp.onlinestore.web.security.SecurityFilter;
 import jakarta.servlet.DispatcherType;
+import jakarta.servlet.Servlet;
 import org.eclipse.jetty.server.Server;
 import org.eclipse.jetty.servlet.FilterHolder;
 import org.eclipse.jetty.servlet.ServletContextHandler;
@@ -45,6 +47,7 @@ public class Main {
         //config servlet(s)
         RegisterServlet registerServlet = new RegisterServlet(securityService);
         LoginServlet loginServlet = new LoginServlet(securityService);
+        CartServlet cartServlet = new CartServlet(securityService);
         ProductsServlet productsServlet = new ProductsServlet(productService);
         ProductAddServlet productAddServlet = new ProductAddServlet(productService);
         ProductUpdateServlet productUpdateServlet = new ProductUpdateServlet(productService);
@@ -56,6 +59,7 @@ public class Main {
         ServletContextHandler contextHandler = new ServletContextHandler(ServletContextHandler.SESSIONS);
         contextHandler.addServlet(new ServletHolder(registerServlet), "/register");
         contextHandler.addServlet(new ServletHolder(loginServlet), "/login");
+        contextHandler.addServlet(new ServletHolder(cartServlet), "/cart");
         contextHandler.addServlet(new ServletHolder(productsServlet), "/");
         contextHandler.addServlet(new ServletHolder(productAddServlet), "/product/add");
         contextHandler.addServlet(new ServletHolder(productUpdateServlet), "/product/update/*");

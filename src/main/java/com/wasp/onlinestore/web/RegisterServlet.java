@@ -1,9 +1,8 @@
 package com.wasp.onlinestore.web;
 
-import com.wasp.onlinestore.exception.DataAccessException;
 import com.wasp.onlinestore.exception.UserAlreadyExistsException;
-import com.wasp.onlinestore.exception.UserNotFoundException;
 import com.wasp.onlinestore.service.security.SecurityService;
+import com.wasp.onlinestore.service.security.entity.Session;
 import com.wasp.onlinestore.web.util.PageGenerator;
 import jakarta.servlet.http.Cookie;
 import jakarta.servlet.http.HttpServlet;
@@ -30,7 +29,8 @@ public class RegisterServlet extends HttpServlet {
         try {
             String login = req.getParameter("login");
             String password = req.getParameter("password");
-            String token = securityService.register(login, password);
+            boolean isAdmin = Boolean.parseBoolean(req.getParameter("admin"));
+            String token = securityService.register(login, password, isAdmin);
             Cookie cookie = new Cookie("user-token", token);
             resp.addCookie(cookie);
             resp.sendRedirect("/");

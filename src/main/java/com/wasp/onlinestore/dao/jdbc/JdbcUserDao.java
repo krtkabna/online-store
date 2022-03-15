@@ -13,6 +13,7 @@ import java.util.Optional;
 public class JdbcUserDao implements UserDao {
     private static final String SELECT_BY_NAME_AND_PASSWORD = "SELECT id FROM users WHERE name=? AND password=?;";
     private static final String SELECT_SALT_BY_NAME = "SELECT salt FROM users WHERE name=?;";
+    private static final String SELECT_ROLE_BY_NAME = "SELECT admin FROM users WHERE name=?;";
     private static final String INSERT = "INSERT INTO users (name, password, salt) VALUES(?, ?, ?);";
     private final DataSource dataSource;
 
@@ -36,13 +37,13 @@ public class JdbcUserDao implements UserDao {
     }
 
     @Override
-    public boolean saveUser(String name, String password, String salt) {
+    public void saveUser(String name, String password, String salt) {
         try (Connection connection = dataSource.getConnection();
              PreparedStatement statement = connection.prepareStatement(INSERT)) {
             statement.setString(1, name);
             statement.setString(2, password);
             statement.setString(3, salt);
-            return statement.execute();
+            statement.execute();
         } catch (SQLException e) {
             throw new DataAccessException("Could not save user by name: " + name, e);
         }
@@ -51,13 +52,29 @@ public class JdbcUserDao implements UserDao {
     @Override
     public Optional<String> getSalt(String name) {
         try (Connection connection = dataSource.getConnection();
-             PreparedStatement statement = connection.prepareStatement(SELECT_SALT_BY_NAME)) {
+             PreparedStatement statement = connection.prepareStatement(SELECT_ROLE_BY_NAME)) {
             statement.setString(1, name);
             try (ResultSet resultSet = statement.executeQuery()) {
                 if (resultSet.next()) {
                     return Optional.of(resultSet.getString("salt"));
                 }
                 return Optional.empty();
+            }
+        } catch (SQLException e) {
+            throw new UserNotFoundException("Could not find user by name: " + name, e);
+        }
+    }
+
+    @Override
+    public boolean isAdmin(String name) {
+        try (Connection connection = dataSource.getConnection();
+             PreparedStatement statement = connection.prepareStatement(SELECT_SALT_BY_NAME)) {
+            statement.setString(1, name);
+            try (ResultSet resultSet = statement.executeQuery()) {
+                if (resultSet.next()) {
+                    return resultSet.getBoolean("admin");
+                }
+                return false;
             }
         } catch (SQLException e) {
             throw new UserNotFoundException("Could not find user by name: " + name, e);
