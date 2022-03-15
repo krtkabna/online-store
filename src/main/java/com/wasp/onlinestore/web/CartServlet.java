@@ -44,7 +44,8 @@ public class CartServlet extends HttpServlet {
     @Override
     protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws IOException {
         Product product = getProductFromRequestBody(req);
-        boolean success = securityService.addToCart(product);
+        String token = getUserToken(req.getCookies());
+        boolean success = securityService.addToCart(token, product);
         resp.setStatus(success ? HttpServletResponse.SC_OK : HttpServletResponse.SC_CONFLICT);
     }
 

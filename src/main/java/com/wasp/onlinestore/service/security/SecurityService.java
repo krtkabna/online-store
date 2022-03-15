@@ -15,12 +15,13 @@ import java.util.UUID;
 public class SecurityService {
     private UserDao userDao;
     private List<String> tokens;
-    private Session session;
+    private List<Session> sessions;
     private PasswordEncoder passwordEncoder;
 
     public SecurityService(UserDao userDao) {
         this.userDao = userDao;
         this.tokens = new ArrayList<>();
+        this.sessions = new ArrayList<>();
         this.passwordEncoder = new PasswordEncoder();
     }
 
@@ -43,7 +44,7 @@ public class SecurityService {
         }
         boolean isAdmin = userDao.isAdmin(login);
         String token = generateToken();
-        session = new Session(token, LocalDateTime.now(), Role.getUserRole(isAdmin));
+        sessions.add(new Session(token, LocalDateTime.now(), Role.getUserRole(isAdmin)));
         return token;
     }
 
@@ -54,7 +55,7 @@ public class SecurityService {
             throw new UserAlreadyExistsException("User already exists by name: " + login);
         }
         String token = generateToken();
-        session = new Session(token, LocalDateTime.now(), Role.getUserRole(isAdmin));
+        sessions.add(new Session(token, LocalDateTime.now(), Role.getUserRole(isAdmin)));
         return token;
     }
 
@@ -69,15 +70,19 @@ public class SecurityService {
         userDao.saveUser(login, saltedHashedPassword, salt);
     }
 
-    public Iterable<Product> getCartByToken(String token) {
-        if (session != null) {
-            return session.getCart();
+    public List<Product> getCartByToken(String token) {
+        Optional<Session> optionalSession = sessions.stream()
+            .filter(session -> token.equals(session.getToken()))
+            .findFirst();
+
+        if (optionalSession.isPresent()) {
+            return optionalSession.get().getCart();
         } else {
             throw new UserNotFoundException("No authorized users!");
         }
     }
 
-    public boolean addToCart(Product product) {
-        return session.getCart().add(product);
+    public boolean addToCart(String token, Product product) {
+        return getCartByToken(token).add(product);
     }
 }
