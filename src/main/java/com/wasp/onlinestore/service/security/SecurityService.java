@@ -2,6 +2,7 @@ package com.wasp.onlinestore.service.security;
 
 import com.wasp.onlinestore.dao.UserDao;
 import com.wasp.onlinestore.entity.Product;
+import com.wasp.onlinestore.entity.User;
 import com.wasp.onlinestore.exception.UserAlreadyExistsException;
 import com.wasp.onlinestore.exception.UserNotFoundException;
 import com.wasp.onlinestore.service.security.entity.Role;
@@ -25,13 +26,13 @@ public class SecurityService {
         this.passwordEncoder = new PasswordEncoder();
     }
 
-    public boolean userExists(String name, String password) {
+    public Optional<User> getUser(String name, String password) {
         Optional<String> optionalSalt = userDao.getSalt(name);
         if (optionalSalt.isEmpty()) {
-            return false;
+            return Optional.empty();
         }
         String saltedHashedPassword = passwordEncoder.hashPassword(password + optionalSalt.get());
-        return userDao.userExists(name, saltedHashedPassword);
+        return userDao.getUserByNameAndPassword(name, saltedHashedPassword);
     }
 
     public boolean isTokenValid(String value) {
@@ -39,23 +40,26 @@ public class SecurityService {
     }
 
     public String login(String login, String password) {
-        if (!userExists(login, password)) {
+        Optional<User> optionalUser = getUser(login, password);
+        if (optionalUser.isEmpty()) {
             throw new UserNotFoundException("Could not find user by name: " + login);
         }
-        boolean isAdmin = userDao.isAdmin(login);
+        User user = optionalUser.get();
         String token = generateToken();
-        sessions.add(new Session(token, LocalDateTime.now(), Role.getUserRole(isAdmin)));
+        sessions.add(new Session(token, LocalDateTime.now(), user));
         return token;
     }
 
     public String register(String login, String password, boolean isAdmin) {
-        if (!userExists(login, password)) {
-            saveUser(login, password, passwordEncoder.getSalt());
+        Optional<User> optionalUser = getUser(login, password);
+        if (optionalUser.isEmpty()) {
+            saveUser(login, password, isAdmin, passwordEncoder.getSalt());
+            optionalUser = getUser(login, password);
         } else {
             throw new UserAlreadyExistsException("User already exists by name: " + login);
         }
         String token = generateToken();
-        sessions.add(new Session(token, LocalDateTime.now(), Role.getUserRole(isAdmin)));
+        sessions.add(new Session(token, LocalDateTime.now(), optionalUser.get()));
         return token;
     }
 
@@ -65,24 +69,22 @@ public class SecurityService {
         return token;
     }
 
-    private void saveUser(String login, String password, String salt) {
+    private void saveUser(String login, String password, boolean isAdmin, String salt) {
         String saltedHashedPassword = passwordEncoder.hashPassword(password + salt);
-        userDao.saveUser(login, saltedHashedPassword, salt);
+        userDao.saveUser(login, saltedHashedPassword, isAdmin, salt);
     }
 
-    public List<Product> getCartByToken(String token) {
+    public Session getSessionByToken(String token) {
         Optional<Session> optionalSession = sessions.stream()
             .filter(session -> token.equals(session.getToken()))
             .findFirst();
 
         if (optionalSession.isPresent()) {
-            return optionalSession.get().getCart();
+            return optionalSession.get()
         } else {
             throw new UserNotFoundException("No authorized users!");
         }
     }
 
-    public boolean addToCart(String token, Product product) {
-        return getCartByToken(token).add(product);
-    }
+
 }

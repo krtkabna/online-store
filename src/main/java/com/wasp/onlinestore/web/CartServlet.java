@@ -2,6 +2,7 @@ package com.wasp.onlinestore.web;
 
 import com.wasp.onlinestore.entity.Product;
 import com.wasp.onlinestore.exception.UserNotFoundException;
+import com.wasp.onlinestore.service.CartService;
 import com.wasp.onlinestore.service.security.SecurityService;
 import com.wasp.onlinestore.web.util.PageGenerator;
 import jakarta.servlet.http.Cookie;
@@ -18,6 +19,7 @@ import static com.wasp.onlinestore.web.util.ProductMapper.getProductFromRequestB
 
 public class CartServlet extends HttpServlet {
     private static final PageGenerator PAGE_GENERATOR = new PageGenerator();
+    private CartService cartService;
     private final SecurityService securityService;
 
     public CartServlet(SecurityService securityService) {
@@ -28,7 +30,8 @@ public class CartServlet extends HttpServlet {
     protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws IOException {
         try {
             String token = getUserToken(req.getCookies());
-            Iterable<Product> products = securityService.getCartByToken(token);
+            this.cartService = new CartService(securityService.getSessionByToken(token));
+            Iterable<Product> products = cartService.getCart();
 
             resp.setStatus(HttpServletResponse.SC_OK);
 
@@ -45,7 +48,7 @@ public class CartServlet extends HttpServlet {
     protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws IOException {
         Product product = getProductFromRequestBody(req);
         String token = getUserToken(req.getCookies());
-        boolean success = securityService.addToCart(token, product);
+        boolean success = cartService.addToCart(product);
         resp.setStatus(success ? HttpServletResponse.SC_OK : HttpServletResponse.SC_CONFLICT);
     }
 
