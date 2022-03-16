@@ -1,11 +1,9 @@
 package com.wasp.onlinestore.service.security;
 
 import com.wasp.onlinestore.dao.UserDao;
-import com.wasp.onlinestore.entity.Product;
 import com.wasp.onlinestore.entity.User;
 import com.wasp.onlinestore.exception.UserAlreadyExistsException;
 import com.wasp.onlinestore.exception.UserNotFoundException;
-import com.wasp.onlinestore.service.security.entity.Role;
 import com.wasp.onlinestore.service.security.entity.Session;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
@@ -80,7 +78,7 @@ public class SecurityService {
             .findFirst();
 
         if (optionalSession.isPresent()) {
-            return optionalSession.get()
+            return optionalSession.get();
         } else {
             throw new UserNotFoundException("No authorized users!");
         }
