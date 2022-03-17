@@ -28,7 +28,7 @@
     </ul>
     <ul class="navbar-nav ml-auto">
         <form class="form-inline">
-            <button class="btn btn-outline-info my-2 my-sm-0" onclick="cart()" type="submit">Cart</button>
+            <a class="btn btn-outline-info my-2 my-sm-0" href="/cart">Cart</a>
         </form>
     </ul>
 </nav>
@@ -62,15 +62,12 @@
                 <a class="btn btn-danger" onclick="remove(${product.id})">
                     <i class="fas fa-trash action"></i>
                 </a>
-                <form action="/cart" class="mt-1 mb-1" method="POST" name="addToCart">
-                    <a class="btn btn-success" onclick="document.addToCart.submit();">
-                        <i class="fas fa-plus action"></i>
-                    </a>
-                </form>
+                <a class="btn btn-success" onclick="">
+                    <i class="fas fa-plus action" onclick="addToCart(${product})"></i>
+                </a>
             </td>
         </tr>
-        </
-        #list>
+        </#list>
         </tbody>
     </table>
 </div>
@@ -91,6 +88,24 @@
         } else {
             console.log('not deleting')
         }
+    }
+
+    function addToCart(product) {
+        let id = product.id;
+        let url = '/cart';
+        let name = product.name;
+        let price = product.price;
+        console.log(id, name, price);
+        fetch(url, {
+            method: 'POST',
+            body: JSON.stringify({'id': id, 'name': name, 'price': price})
+        }).then(result => {
+            console.log('Success:', result);
+        }).then(() => {
+            window.location.assign('/')
+        }).catch(err => {
+            console.error(err)
+        })
     }
 
     function cart() {

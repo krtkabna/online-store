@@ -37,6 +37,7 @@ public class LoginServlet extends HttpServlet {
             pageGenerator.writePage("login_failed.html", resp.getWriter());
         } catch (UserNotFoundException e) {
             resp.setStatus(HttpServletResponse.SC_NOT_FOUND);
+            pageGenerator.writePage("login_failed.html", resp.getWriter());
         }
     }
 }

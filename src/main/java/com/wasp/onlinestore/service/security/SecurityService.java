@@ -13,13 +13,11 @@ import java.util.UUID;
 
 public class SecurityService {
     private final UserDao userDao;
-    private final List<String> tokens;
     private final List<Session> sessions;
     private final PasswordEncoder passwordEncoder;
 
     public SecurityService(UserDao userDao) {
         this.userDao = userDao;
-        this.tokens = new ArrayList<>();
         this.sessions = new ArrayList<>();
         this.passwordEncoder = new PasswordEncoder();
     }
@@ -34,7 +32,9 @@ public class SecurityService {
     }
 
     public boolean isTokenValid(String value) {
-        return tokens.contains(value);
+        return sessions.stream()
+            .map(Session::getToken)
+            .anyMatch(value::equals);
     }
 
     public String login(String login, String password) {
@@ -49,22 +49,20 @@ public class SecurityService {
     }
 
     public String register(String login, String password, boolean isAdmin) {
-        Optional<User> optionalUser = getUser(login, password);
-        if (optionalUser.isEmpty()) {
+        User user;
+        if (getUser(login, password).isEmpty()) {
             saveUser(login, password, isAdmin, passwordEncoder.getSalt());
-            optionalUser = getUser(login, password);
+            user = getUser(login, password).get();
         } else {
             throw new UserAlreadyExistsException("User already exists by name: " + login);
         }
         String token = generateToken();
-        sessions.add(new Session(token, LocalDateTime.now(), optionalUser.get()));
+        sessions.add(new Session(token, LocalDateTime.now(), user));
         return token;
     }
 
     private String generateToken() {
-        String token = String.valueOf(UUID.randomUUID());
-        tokens.add(token);
-        return token;
+        return String.valueOf(UUID.randomUUID());
     }
 
     private void saveUser(String login, String password, boolean isAdmin, String salt) {
