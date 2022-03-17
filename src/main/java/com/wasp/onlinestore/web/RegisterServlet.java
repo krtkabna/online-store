@@ -2,7 +2,6 @@ package com.wasp.onlinestore.web;
 
 import com.wasp.onlinestore.exception.UserAlreadyExistsException;
 import com.wasp.onlinestore.service.security.SecurityService;
-import com.wasp.onlinestore.service.security.entity.Session;
 import com.wasp.onlinestore.web.util.PageGenerator;
 import jakarta.servlet.http.Cookie;
 import jakarta.servlet.http.HttpServlet;

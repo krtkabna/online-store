@@ -13,7 +13,7 @@ import java.io.IOException;
 import java.util.Arrays;
 
 public class SecurityFilter implements jakarta.servlet.Filter {
-    private SecurityService securityService;
+    private final SecurityService securityService;
 
     public SecurityFilter(SecurityService securityService) {
         this.securityService = securityService;

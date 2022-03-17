@@ -28,7 +28,7 @@
     </ul>
     <ul class="navbar-nav ml-auto">
         <form class="form-inline">
-            <button class="btn btn-outline-info my-2 my-sm-0" type="submit" onclick="cart()">Cart</button>
+            <button class="btn btn-outline-info my-2 my-sm-0" onclick="cart()" type="submit">Cart</button>
         </form>
     </ul>
 </nav>
@@ -62,14 +62,15 @@
                 <a class="btn btn-danger" onclick="remove(${product.id})">
                     <i class="fas fa-trash action"></i>
                 </a>
-                <form action="/cart" method="POST" class="mt-1 mb-1" name="addToCart">
+                <form action="/cart" class="mt-1 mb-1" method="POST" name="addToCart">
                     <a class="btn btn-success" onclick="document.addToCart.submit();">
                         <i class="fas fa-plus action"></i>
                     </a>
                 </form>
             </td>
         </tr>
-        </#list>
+        </
+        #list>
         </tbody>
     </table>
 </div>
@@ -90,11 +91,11 @@
         } else {
             console.log('not deleting')
         }
-    };
+    }
 
     function cart() {
         window.location.assign('/cart')
-    };
+    }
 </script>
 </body>
 </html>

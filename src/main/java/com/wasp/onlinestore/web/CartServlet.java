@@ -19,8 +19,8 @@ import static com.wasp.onlinestore.web.util.ProductMapper.getProductFromRequestB
 
 public class CartServlet extends HttpServlet {
     private static final PageGenerator PAGE_GENERATOR = new PageGenerator();
-    private CartService cartService;
     private final SecurityService securityService;
+    private CartService cartService;
 
     public CartServlet(SecurityService securityService) {
         this.securityService = securityService;

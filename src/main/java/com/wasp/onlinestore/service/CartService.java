@@ -5,7 +5,7 @@ import com.wasp.onlinestore.service.security.entity.Session;
 import java.util.List;
 
 public class CartService {
-    private Session session;
+    private final Session session;
 
     public CartService(Session session) {
         this.session = session;

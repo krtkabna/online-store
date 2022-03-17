@@ -5,7 +5,6 @@ import com.wasp.onlinestore.dao.ProductDao;
 import com.wasp.onlinestore.dao.UserDao;
 import com.wasp.onlinestore.dao.jdbc.JdbcProductDao;
 import com.wasp.onlinestore.dao.jdbc.JdbcUserDao;
-import com.wasp.onlinestore.service.CartService;
 import com.wasp.onlinestore.service.ProductService;
 import com.wasp.onlinestore.service.security.SecurityService;
 import com.wasp.onlinestore.web.CartServlet;
