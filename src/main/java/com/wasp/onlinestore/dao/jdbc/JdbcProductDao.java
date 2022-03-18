@@ -66,7 +66,7 @@ public class JdbcProductDao implements ProductDao {
              PreparedStatement statement = connection.prepareStatement(INSERT_NAME_PRICE)) {
             statement.setString(1, product.getName());
             statement.setDouble(2, product.getPrice());
-            return statement.execute();
+            return statement.executeUpdate() == 1;
         } catch (SQLException e) {
             throw new DataAccessException("SQL error occurred on INSERT: " + INSERT_NAME_PRICE, e);
         }

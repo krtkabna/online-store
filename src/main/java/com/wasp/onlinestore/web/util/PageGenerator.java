@@ -7,7 +7,7 @@ import freemarker.template.TemplateException;
 import java.io.File;
 import java.io.IOException;
 import java.io.PrintWriter;
-import java.util.HashMap;
+import java.util.Collections;
 import java.util.Map;
 
 public class PageGenerator {
@@ -32,6 +32,6 @@ public class PageGenerator {
     }
 
     public void writePage(String filename, PrintWriter writer) {
-        writePage(filename, writer, new HashMap<>());
+        writePage(filename, writer, Collections.emptyMap());
     }
 }

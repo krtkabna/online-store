@@ -2,6 +2,8 @@ package com.wasp.onlinestore.web;
 
 import com.wasp.onlinestore.entity.Product;
 import com.wasp.onlinestore.service.ProductService;
+import com.wasp.onlinestore.service.security.entity.Role;
+import com.wasp.onlinestore.service.security.entity.Session;
 import com.wasp.onlinestore.web.util.PageGenerator;
 import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
@@ -28,6 +30,20 @@ public class ProductsServlet extends HttpServlet {
         Map<String, Object> pageVariables = new HashMap<>();
         pageVariables.put("products", products);
 
+        Role role = getUserRole(req);
+        if (role != null) {
+            pageVariables.put("role", role.name());
+        }
+
         pageGenerator.writePage("products.html", resp.getWriter(), pageVariables);
+    }
+
+    private Role getUserRole(HttpServletRequest req) {
+        Session session = getSession(req);
+        return (session != null) ? session.getUser().getRole() : null;
+    }
+
+    private Session getSession(HttpServletRequest req) {
+        return (Session) req.getAttribute("session");
     }
 }

@@ -4,20 +4,19 @@ import com.wasp.onlinestore.dao.UserDao;
 import com.wasp.onlinestore.dao.jdbc.mapper.UserRowMapper;
 import com.wasp.onlinestore.entity.User;
 import com.wasp.onlinestore.exception.DataAccessException;
-import com.wasp.onlinestore.exception.UserNotFoundException;
 import javax.sql.DataSource;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.sql.Types;
 import java.util.Optional;
 
 public class JdbcUserDao implements UserDao {
     private static final UserRowMapper USER_ROW_MAPPER = new UserRowMapper();
-    private static final String SELECT_BY_NAME_AND_PASSWORD = "SELECT id, name, admin FROM users WHERE name=? AND password=?;";
+    private static final String SELECT_BY_NAME_AND_PASSWORD = "SELECT id, name, role FROM users WHERE name=? AND password=?;";
     private static final String SELECT_SALT_BY_NAME = "SELECT salt FROM users WHERE name=?;";
-    private static final String SELECT_ROLE_BY_NAME = "SELECT admin FROM users WHERE name=?;";
-    private static final String INSERT = "INSERT INTO users (name, password, salt, admin) VALUES(?, ?, ?, ?);";
+    private static final String INSERT = "INSERT INTO users (name, password, salt, role) VALUES(?, ?, ?, ?);";
     private final DataSource dataSource;
 
     public JdbcUserDao(DataSource dataSource) {
@@ -44,23 +43,23 @@ public class JdbcUserDao implements UserDao {
     }
 
     @Override
-    public void saveUser(String name, String password, boolean isAdmin, String salt) {
+    public void saveUser(User user, String salt) {
         try (Connection connection = dataSource.getConnection();
              PreparedStatement statement = connection.prepareStatement(INSERT)) {
-            statement.setString(1, name);
-            statement.setString(2, password);
+            statement.setString(1, user.getName());
+            statement.setString(2, user.getPassword());
             statement.setString(3, salt);
-            statement.setString(4, String.valueOf(isAdmin));
+            statement.setObject(4, user.getRole().name().toUpperCase(), Types.OTHER);
             statement.execute();
         } catch (SQLException e) {
-            throw new DataAccessException("Could not save user by name: " + name, e);
+            throw new DataAccessException("Could not save user by name: " + user.getName(), e);
         }
     }
 
     @Override
     public Optional<String> getSalt(String name) {
         try (Connection connection = dataSource.getConnection();
-             PreparedStatement statement = connection.prepareStatement(SELECT_ROLE_BY_NAME)) {
+             PreparedStatement statement = connection.prepareStatement(SELECT_SALT_BY_NAME)) {
             statement.setString(1, name);
             try (ResultSet resultSet = statement.executeQuery()) {
                 if (resultSet.next()) {
@@ -69,23 +68,7 @@ public class JdbcUserDao implements UserDao {
                 return Optional.empty();
             }
         } catch (SQLException e) {
-            throw new UserNotFoundException("Could not find user by name: " + name, e);
-        }
-    }
-
-    @Override
-    public boolean isAdmin(String name) {
-        try (Connection connection = dataSource.getConnection();
-             PreparedStatement statement = connection.prepareStatement(SELECT_SALT_BY_NAME)) {
-            statement.setString(1, name);
-            try (ResultSet resultSet = statement.executeQuery()) {
-                if (resultSet.next()) {
-                    return resultSet.getBoolean("admin");
-                }
-                return false;
-            }
-        } catch (SQLException e) {
-            throw new UserNotFoundException("Could not find user by name: " + name, e);
+            throw new DataAccessException("Could not find user by name: " + name, e);
         }
     }
 }
