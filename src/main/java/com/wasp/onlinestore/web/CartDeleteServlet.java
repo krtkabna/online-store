@@ -12,7 +12,7 @@ import java.io.IOException;
 import static com.wasp.onlinestore.web.util.SessionFetcher.*;
 
 public class CartDeleteServlet extends HttpServlet {
-    private CartService cartService;
+    private final CartService cartService;
 
     public CartDeleteServlet(CartService cartService) {
         this.cartService = cartService;

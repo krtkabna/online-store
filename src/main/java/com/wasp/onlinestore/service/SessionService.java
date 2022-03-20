@@ -3,12 +3,11 @@ package com.wasp.onlinestore.service;
 import com.wasp.onlinestore.service.security.SecurityService;
 import com.wasp.onlinestore.service.security.entity.Session;
 import jakarta.servlet.http.Cookie;
-import jakarta.servlet.http.HttpServletRequest;
 import java.util.Arrays;
 import java.util.stream.Collectors;
 
 public class SessionService {
-    private SecurityService securityService;
+    private final SecurityService securityService;
 
     public SessionService(SecurityService securityService) {
         this.securityService = securityService;
