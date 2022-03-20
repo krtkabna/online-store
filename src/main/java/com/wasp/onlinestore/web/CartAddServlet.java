@@ -13,8 +13,8 @@ import java.util.Map;
 import static com.wasp.onlinestore.web.util.SessionFetcher.*;
 
 public class CartAddServlet extends HttpServlet {
-    private CartService cartService;
-    private ProductService productService;
+    private final CartService cartService;
+    private final ProductService productService;
 
     public CartAddServlet(CartService cartService, ProductService productService) {
         this.cartService = cartService;

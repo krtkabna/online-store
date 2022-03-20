@@ -2,7 +2,6 @@ package com.wasp.onlinestore.web;
 
 import com.wasp.onlinestore.entity.Product;
 import com.wasp.onlinestore.exception.UserNotFoundException;
-import com.wasp.onlinestore.service.SessionService;
 import com.wasp.onlinestore.web.util.PageGenerator;
 import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;

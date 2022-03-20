@@ -1,6 +1,6 @@
 package com.wasp.onlinestore.web;
 
-import com.wasp.onlinestore.exception.UserAlreadyExistsException;
+import com.wasp.onlinestore.exception.DataAccessException;
 import com.wasp.onlinestore.service.security.SecurityService;
 import com.wasp.onlinestore.web.util.PageGenerator;
 import jakarta.servlet.http.Cookie;
@@ -33,7 +33,7 @@ public class RegisterServlet extends HttpServlet {
             Cookie cookie = new Cookie("user-token", token);
             resp.addCookie(cookie);
             resp.sendRedirect("/");
-        } catch (UserAlreadyExistsException e) {
+        } catch (DataAccessException e) {
             resp.setStatus(HttpServletResponse.SC_BAD_REQUEST);
         }
     }
