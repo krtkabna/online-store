@@ -14,7 +14,7 @@
         <maven.compiler.target>11</maven.compiler.target>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <jetty.version>9.3.0.M0</jetty.version>
-        <mainClass>com.wasp.onlinestore.Main</mainClass>
+        <mainClass>com.wasp.onlinestore.main.Main</mainClass>
         <heroku.appName>wasp-online-store</heroku.appName>
         <db.url>jdbc:postgresql://localhost:5432/shop</db.url>
         <db.user>wasp</db.user>
@@ -50,7 +50,7 @@
                             <createDependencyReducedPom>false</createDependencyReducedPom>
                             <transformers>
                                 <transformer implementation="org.apache.maven.plugins.shade.resource.ManifestResourceTransformer">
-                                    <mainClass>com.wasp.onlinestore.Main</mainClass>
+                                    <mainClass>com.wasp.onlinestore.main.Main</mainClass>
                                 </transformer>
                             </transformers>
                         </configuration>
@@ -116,6 +116,11 @@
             <artifactId>annotations</artifactId>
             <version>23.0.0</version>
             <scope>compile</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.slf4j</groupId>
+            <artifactId>slf4j-api</artifactId>
+            <version>1.7.36</version>
         </dependency>
     </dependencies>
 

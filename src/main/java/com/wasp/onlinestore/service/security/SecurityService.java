@@ -47,7 +47,7 @@ public class SecurityService {
         if (isTokenValid(token)) {
             return sessions.get(token);
         } else {
-            throw new UserNotFoundException("No authorized users!");
+            return null;
         }
     }
 

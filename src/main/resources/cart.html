@@ -17,9 +17,11 @@
         <li class="nav-item active">
             <a class="nav-link" href="/">Home <span class="sr-only">(current)</span></a>
         </li>
+        <#if role! == "ADMIN">
         <li class="nav-item">
             <a class="nav-link" href="/product/add">Add Product</a>
         </li>
+    </#if>
     </ul>
 </nav>
 <div class="container">
@@ -34,26 +36,26 @@
             <th>Id</th>
             <th>Name</th>
             <th>Price</th>
-            <th>Action</th>
+            <th>Quantity</th>
         </tr>
         </thead>
         <tbody>
-        <#list products as product>
+        <#list cart as product, quantity>
         <tr>
             <td>${product.id}</td>
             <td>${product.name}</td>
             <td>$${product.price}</td>
             <td style="white-space: nowrap;">
-                <a class="btn btn-success" href="/product/update/${product.id}">
+                <a class="btn btn-success" href="/cart/add?id=${product.id}">
                     <i class="fas fa-plus"></i>
                 </a>
+                ${quantity}
                 <a class="btn btn-danger" onclick="remove(${product.id})">
                     <i class="fas fa-minus" style="color: white"></i>
                 </a>
             </td>
         </tr>
-        </
-        #list>
+        </#list>
         </tbody>
     </table>
 </div>

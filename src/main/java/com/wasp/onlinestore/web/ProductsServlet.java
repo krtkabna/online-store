@@ -12,6 +12,8 @@ import java.io.IOException;
 import java.util.HashMap;
 import java.util.Map;
 
+import static com.wasp.onlinestore.web.util.SessionFetcher.*;
+
 public class ProductsServlet extends HttpServlet {
     private final ProductService productService;
     private final PageGenerator pageGenerator;
@@ -31,19 +33,13 @@ public class ProductsServlet extends HttpServlet {
         pageVariables.put("products", products);
 
         Role role = getUserRole(req);
-        if (role != null) {
-            pageVariables.put("role", role.name());
-        }
+        pageVariables.put("role", role.name());
 
         pageGenerator.writePage("products.html", resp.getWriter(), pageVariables);
     }
 
     private Role getUserRole(HttpServletRequest req) {
         Session session = getSession(req);
-        return (session != null) ? session.getUser().getRole() : null;
-    }
-
-    private Session getSession(HttpServletRequest req) {
-        return (Session) req.getAttribute("session");
+        return (session != null) ? session.getUser().getRole() : Role.GUEST;
     }
 }
