@@ -1,6 +1,7 @@
 package com.wasp.onlinestore.web;
 
 import com.wasp.onlinestore.entity.Product;
+import com.wasp.onlinestore.main.ServiceLocator;
 import com.wasp.onlinestore.service.ProductService;
 import com.wasp.onlinestore.service.security.entity.Role;
 import com.wasp.onlinestore.service.security.entity.Session;
@@ -15,13 +16,8 @@ import java.util.Map;
 import static com.wasp.onlinestore.web.util.SessionFetcher.*;
 
 public class ProductsServlet extends HttpServlet {
-    private final ProductService productService;
-    private final PageGenerator pageGenerator;
-
-    public ProductsServlet(ProductService productService) {
-        this.productService = productService;
-        this.pageGenerator = new PageGenerator();
-    }
+    private final ProductService productService = ServiceLocator.get(ProductService.class);
+    private final PageGenerator pageGenerator = ServiceLocator.get(PageGenerator.class);
 
     @Override
     protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws IOException {
