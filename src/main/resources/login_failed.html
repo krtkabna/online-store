@@ -1,4 +1,3 @@
-
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -16,9 +15,9 @@
 </head>
 <body>
 <div class="container mt-3 form-signin">
-    <form class="mx-auto" action="/login" method="POST">
+    <form action="/login" class="mx-auto" method="POST">
         <div class="text-center">
-            <img class="mb-4" src="https://cdn-icons-png.flaticon.com/128/235/235426.png" alt="" width="72" height="72">
+            <img alt="" class="mb-4" height="72" src="https://cdn-icons-png.flaticon.com/128/235/235426.png" width="72">
             <h2>Please sign in</h2>
         </div>
         <div class="form-floating mt-3 mb-3">
@@ -29,7 +28,8 @@
             <input class="form-control" id="password" name="password" placeholder="Enter password" type="password">
             <label for="password">Password</label>
         </div>
-        <div class="alert alert-danger alert-dismissible alert-sm fade show" role="alert" style="line-height:40px; padding:0px 15px;">
+        <div class="alert alert-danger alert-dismissible alert-sm fade show" role="alert"
+             style="line-height:40px; padding:0px 15px;">
             No user found with these credentials, try again
         </div>
         <button class="btn btn-primary btn-lg w-100" type="submit">Submit</button>

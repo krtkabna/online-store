@@ -1,8 +1,11 @@
 package com.wasp.onlinestore.web.security;
 
-import com.wasp.onlinestore.service.security.SecurityService;
+import com.wasp.onlinestore.exception.UserNotFoundException;
+import com.wasp.onlinestore.service.SessionService;
+import com.wasp.onlinestore.service.security.entity.Role;
+import com.wasp.onlinestore.service.security.entity.Session;
+import jakarta.servlet.Filter;
 import jakarta.servlet.FilterChain;
-import jakarta.servlet.FilterConfig;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.ServletRequest;
 import jakarta.servlet.ServletResponse;
@@ -10,18 +13,12 @@ import jakarta.servlet.http.Cookie;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import java.io.IOException;
-import java.util.Arrays;
 
-public class SecurityFilter implements jakarta.servlet.Filter {
-    private SecurityService securityService;
+public abstract class SecurityFilter implements Filter {
+    private final SessionService sessionService;
 
-    public SecurityFilter(SecurityService securityService) {
-        this.securityService = securityService;
-    }
-
-    @Override
-    public void init(FilterConfig filterConfig) {
-
+    protected SecurityFilter(SessionService sessionService) {
+        this.sessionService = sessionService;
     }
 
     @Override
@@ -30,25 +27,22 @@ public class SecurityFilter implements jakarta.servlet.Filter {
         HttpServletResponse httpServletResponse = (HttpServletResponse) response;
 
         Cookie[] cookies = httpServletRequest.getCookies();
+        try {
+            Session session = sessionService.getSession(cookies);
 
-        boolean isAuthorized = (cookies != null) && isTokenValid(cookies);
+            boolean isAuthorized = (session != null) && isRoleAllowed(session.getUser().getRole());
 
-        if (!isAuthorized) {
+            if (!isAuthorized) {
+                httpServletResponse.sendRedirect("/login");
+                return;
+            }
+
+            httpServletRequest.setAttribute("session", session);
+            chain.doFilter(request, response);
+        } catch (UserNotFoundException e) {
             httpServletResponse.sendRedirect("/login");
-            return;
         }
-
-        chain.doFilter(request, response);
     }
 
-    private boolean isTokenValid(Cookie[] cookies) {
-        return Arrays.stream(cookies)
-            .filter(cookie -> "user-token".equals(cookie.getName()))
-            .anyMatch(cookie -> securityService.isTokenValid(cookie.getValue()));
-    }
-
-    @Override
-    public void destroy() {
-
-    }
+    public abstract boolean isRoleAllowed(Role role);
 }

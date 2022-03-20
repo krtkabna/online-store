@@ -22,14 +22,22 @@
         <li class="nav-item active">
             <a class="nav-link" href="/">Home <span class="sr-only">(current)</span></a>
         </li>
+        <#if role! == "ADMIN">
         <li class="nav-item">
             <a class="nav-link" href="/product/add">Add Product</a>
         </li>
+        </#if>
     </ul>
     <ul class="navbar-nav ml-auto">
+        <#if role! == "USER" || role! == "ADMIN">
         <form class="form-inline">
-            <button class="btn btn-outline-info my-2 my-sm-0" type="submit" onclick="cart()">Cart</button>
+            <a class="btn btn-outline-info my-2 my-sm-0" href="/cart">Cart</a>
         </form>
+        <#else>
+        <form class="form-inline">
+            <a class="btn btn-outline-info my-2 my-sm-0" href="/login">Log In</a>
+        </form>
+        </#if>
     </ul>
 </nav>
 <div class="container">
@@ -45,7 +53,9 @@
             <th>Name</th>
             <th>Price</th>
             <th>Created</th>
-            <th>Action</th>
+            <#if role! == "USER" || role! == "ADMIN">
+                <th>Action</th>
+            </#if>
         </tr>
         </thead>
         <tbody>
@@ -55,19 +65,24 @@
             <td>${product.name}</td>
             <td>$${product.price}</td>
             <td>${product.creationDate}</td>
-            <td style="white-space: nowrap;">
-                <a class="btn btn-warning" href="/product/update/${product.id}">
-                    <i class="fas fa-pen action"></i>
-                </a>
-                <a class="btn btn-danger" onclick="remove(${product.id})">
-                    <i class="fas fa-trash action"></i>
-                </a>
-                <form action="/cart" method="POST" class="mt-1 mb-1" name="addToCart">
-                    <a class="btn btn-success" onclick="document.addToCart.submit();">
-                        <i class="fas fa-plus action"></i>
-                    </a>
-                </form>
-            </td>
+            <#if role! == "USER" || role! == "ADMIN">
+                <td style="white-space: nowrap;">
+                    <#if role! == "ADMIN">
+                        <a class="btn btn-warning" href="/product/update/${product.id}">
+                            <i class="fas fa-pen action"></i>
+                        </a>
+                        <a class="btn btn-danger" onclick="remove(${product.id})">
+                            <i class="fas fa-trash action"></i>
+                        </a>
+                    </#if>
+<!--                        <button class="btn btn-success" type="submit" formaction="/cart">-->
+<!--                            <i class="fas fa-plus action"></i>-->
+<!--                        </button>-->
+                        <a class="btn btn-success" onclick="addToCart(${product.id})">
+                            <i class="fas fa-plus action"></i>
+                        </a>
+                </td>
+            </#if>
         </tr>
         </#list>
         </tbody>
@@ -90,11 +105,22 @@
         } else {
             console.log('not deleting')
         }
-    };
+    }
 
-    function cart() {
-        window.location.assign('/cart')
-    };
+    function addToCart(id) {
+        let url = '/cart/add';
+        console.log(id);
+        fetch(url + '?id=' + id, {
+            method: 'POST',
+            // body: JSON.stringify({'id': id})
+        }).then(result => {
+            console.log('Success:', result);
+        // }).then(() => {
+        //     window.location.assign('/cart')
+        }).catch(err => {
+            console.error(err)
+        })
+    }
 </script>
 </body>
 </html>

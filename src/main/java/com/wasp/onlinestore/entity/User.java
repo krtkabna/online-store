@@ -1,5 +1,6 @@
 package com.wasp.onlinestore.entity;
 
+import com.wasp.onlinestore.service.security.entity.Role;
 import lombok.Builder;
 import lombok.Data;
 
@@ -9,5 +10,5 @@ public class User {
     private int id;
     private String name;
     private String password;
-    private boolean isAdmin;
+    private Role role;
 }

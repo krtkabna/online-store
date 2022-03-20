@@ -3,7 +3,6 @@ package com.wasp.onlinestore.web;
 import com.wasp.onlinestore.exception.DataAccessException;
 import com.wasp.onlinestore.exception.UserNotFoundException;
 import com.wasp.onlinestore.service.security.SecurityService;
-import com.wasp.onlinestore.service.security.entity.Session;
 import com.wasp.onlinestore.web.util.PageGenerator;
 import jakarta.servlet.http.Cookie;
 import jakarta.servlet.http.HttpServlet;
@@ -38,6 +37,7 @@ public class LoginServlet extends HttpServlet {
             pageGenerator.writePage("login_failed.html", resp.getWriter());
         } catch (UserNotFoundException e) {
             resp.setStatus(HttpServletResponse.SC_NOT_FOUND);
+            pageGenerator.writePage("login_failed.html", resp.getWriter());
         }
     }
 }

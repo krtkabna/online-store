@@ -1,4 +1,4 @@
-package com.wasp.onlinestore;
+package com.wasp.onlinestore.main;
 
 import com.wasp.onlinestore.config.PropertyReader;
 import com.wasp.onlinestore.dao.ProductDao;
@@ -7,7 +7,11 @@ import com.wasp.onlinestore.dao.jdbc.JdbcProductDao;
 import com.wasp.onlinestore.dao.jdbc.JdbcUserDao;
 import com.wasp.onlinestore.service.CartService;
 import com.wasp.onlinestore.service.ProductService;
+import com.wasp.onlinestore.service.UserService;
+import com.wasp.onlinestore.service.SessionService;
 import com.wasp.onlinestore.service.security.SecurityService;
+import com.wasp.onlinestore.web.CartAddServlet;
+import com.wasp.onlinestore.web.CartDeleteServlet;
 import com.wasp.onlinestore.web.CartServlet;
 import com.wasp.onlinestore.web.LoginServlet;
 import com.wasp.onlinestore.web.ProductAddServlet;
@@ -15,7 +19,9 @@ import com.wasp.onlinestore.web.ProductDeleteServlet;
 import com.wasp.onlinestore.web.ProductUpdateServlet;
 import com.wasp.onlinestore.web.ProductsServlet;
 import com.wasp.onlinestore.web.RegisterServlet;
-import com.wasp.onlinestore.web.security.SecurityFilter;
+import com.wasp.onlinestore.web.security.AdminFilter;
+import com.wasp.onlinestore.web.security.GuestFilter;
+import com.wasp.onlinestore.web.security.UserFilter;
 import jakarta.servlet.DispatcherType;
 import org.eclipse.jetty.server.Server;
 import org.eclipse.jetty.servlet.FilterHolder;
@@ -41,30 +47,45 @@ public class Main {
         UserDao userDao = new JdbcUserDao(pgSimpleDataSource);
 
         //config service
+        UserService userService = new UserService(userDao);
         ProductService productService = new ProductService(productDao);
-        SecurityService securityService = new SecurityService(userDao);
+        CartService cartService = new CartService(productService);
+        SecurityService securityService = new SecurityService(userService);
+        SessionService sessionService = new SessionService(securityService);
 
-        //config servlet(s)
+        //config servlet
         RegisterServlet registerServlet = new RegisterServlet(securityService);
         LoginServlet loginServlet = new LoginServlet(securityService);
-        CartServlet cartServlet = new CartServlet(securityService);
+        CartServlet cartServlet = new CartServlet();
+        CartAddServlet cartAddServlet = new CartAddServlet(cartService, productService);
+        CartDeleteServlet cartDeleteServlet = new CartDeleteServlet(cartService);
         ProductsServlet productsServlet = new ProductsServlet(productService);
         ProductAddServlet productAddServlet = new ProductAddServlet(productService);
         ProductUpdateServlet productUpdateServlet = new ProductUpdateServlet(productService);
         ProductDeleteServlet productDeleteServlet = new ProductDeleteServlet(productService);
 
-        SecurityFilter securityFilter = new SecurityFilter(securityService);
-
         //servlet mapping
         ServletContextHandler contextHandler = new ServletContextHandler(ServletContextHandler.SESSIONS);
         contextHandler.addServlet(new ServletHolder(registerServlet), "/register");
         contextHandler.addServlet(new ServletHolder(loginServlet), "/login");
-        contextHandler.addServlet(new ServletHolder(cartServlet), "/cart");
         contextHandler.addServlet(new ServletHolder(productsServlet), "/");
         contextHandler.addServlet(new ServletHolder(productAddServlet), "/product/add");
         contextHandler.addServlet(new ServletHolder(productUpdateServlet), "/product/update/*");
         contextHandler.addServlet(new ServletHolder(productDeleteServlet), "/product/delete");
-        contextHandler.addFilter(new FilterHolder(securityFilter), "/product/*", EnumSet.of(DispatcherType.REQUEST));
+        contextHandler.addServlet(new ServletHolder(cartServlet), "/cart");
+        contextHandler.addServlet(new ServletHolder(cartAddServlet), "/cart/add");
+        contextHandler.addServlet(new ServletHolder(cartDeleteServlet), "/cart/delete");
+
+        //config filter
+        AdminFilter adminFilter = new AdminFilter(sessionService);
+        UserFilter userFilter = new UserFilter(sessionService);
+        GuestFilter guestFilter = new GuestFilter(sessionService);
+
+        //filter mapping
+        contextHandler.addFilter(new FilterHolder(adminFilter), "/product/*", EnumSet.of(DispatcherType.REQUEST));
+        contextHandler.addFilter(new FilterHolder(userFilter), "/cart", EnumSet.of(DispatcherType.REQUEST));
+        contextHandler.addFilter(new FilterHolder(userFilter), "/cart/*", EnumSet.of(DispatcherType.REQUEST));
+        contextHandler.addFilter(new FilterHolder(guestFilter), "/*", EnumSet.of(DispatcherType.REQUEST));
 
         //start server
         Server server = new Server(8080);
