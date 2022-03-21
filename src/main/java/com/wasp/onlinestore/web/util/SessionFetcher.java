@@ -9,6 +9,9 @@ import java.util.stream.Collectors;
 
 @UtilityClass
 public class SessionFetcher {
+    public static final int EXPIRE_IN_SECONDS = 900;
+    public static final long EXPIRE_IN_MINUTES = EXPIRE_IN_SECONDS / 60;
+
     public Session getSession(HttpServletRequest req) {
         return (Session) req.getAttribute("session");
     }

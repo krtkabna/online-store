@@ -7,9 +7,12 @@ import com.wasp.onlinestore.service.UserService;
 import com.wasp.onlinestore.service.security.entity.Role;
 import com.wasp.onlinestore.service.security.entity.Session;
 import java.time.LocalDateTime;
+import java.util.List;
 import java.util.Map;
 import java.util.UUID;
 import java.util.concurrent.ConcurrentHashMap;
+
+import static com.wasp.onlinestore.web.util.SessionFetcher.EXPIRE_IN_MINUTES;
 
 public class SecurityService {
     private final UserService userService;
@@ -32,7 +35,7 @@ public class SecurityService {
         User user = getUser(login);
         checkPasswordMatchesName(user, password);
         String token = generateToken();
-        sessions.put(token, new Session(token, LocalDateTime.now(), user));
+        sessions.put(token, new Session(token, LocalDateTime.now().plusMinutes(EXPIRE_IN_MINUTES), user));
         return token;
     }
 
@@ -40,7 +43,7 @@ public class SecurityService {
         saveUser(login, password, passwordEncoder.getSalt());
         User user = getUser(login);
         String token = generateToken();
-        sessions.put(token, new Session(token, LocalDateTime.now(), user));
+        sessions.put(token, new Session(token, LocalDateTime.now().plusMinutes(EXPIRE_IN_MINUTES), user));
         return token;
     }
 
