@@ -5,14 +5,13 @@ import com.wasp.onlinestore.service.ProductService;
 import com.wasp.onlinestore.service.security.entity.Role;
 import com.wasp.onlinestore.service.security.entity.Session;
 import com.wasp.onlinestore.web.util.PageGenerator;
+import com.wasp.onlinestore.web.util.SessionFetcher;
 import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.util.HashMap;
 import java.util.Map;
-
-import static com.wasp.onlinestore.web.util.SessionFetcher.*;
 
 public class ProductsServlet extends HttpServlet {
     private final ProductService productService;
@@ -39,7 +38,7 @@ public class ProductsServlet extends HttpServlet {
     }
 
     private Role getUserRole(HttpServletRequest req) {
-        Session session = getSession(req);
+        Session session = SessionFetcher.getSession(req);
         return (session != null) ? session.getUser().getRole() : Role.GUEST;
     }
 }

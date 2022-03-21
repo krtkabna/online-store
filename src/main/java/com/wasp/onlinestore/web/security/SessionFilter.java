@@ -1,7 +1,8 @@
 package com.wasp.onlinestore.web.security;
 
-import com.wasp.onlinestore.service.SessionService;
+import com.wasp.onlinestore.service.security.SecurityService;
 import com.wasp.onlinestore.service.security.entity.Session;
+import com.wasp.onlinestore.web.util.SessionFetcher;
 import jakarta.servlet.Filter;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
@@ -11,12 +12,12 @@ import jakarta.servlet.http.Cookie;
 import jakarta.servlet.http.HttpServletRequest;
 import java.io.IOException;
 
-public class GuestFilter implements Filter {
+public class SessionFilter implements Filter {
     public static final String SESSION = "session";
-    private final SessionService sessionService;
+    private final SecurityService securityService;
 
-    public GuestFilter(SessionService sessionService) {
-        this.sessionService = sessionService;
+    public SessionFilter(SecurityService securityService) {
+        this.securityService = securityService;
     }
 
     @Override
@@ -24,7 +25,7 @@ public class GuestFilter implements Filter {
         HttpServletRequest httpServletRequest = (HttpServletRequest) request;
 
         Cookie[] cookies = httpServletRequest.getCookies();
-        Session session = sessionService.getSession(cookies);
+        Session session = securityService.getSessionByToken(SessionFetcher.getUserToken(cookies));
 
         if (session != null) {
             httpServletRequest.setAttribute(SESSION, session);

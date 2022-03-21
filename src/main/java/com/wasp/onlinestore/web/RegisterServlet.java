@@ -28,8 +28,7 @@ public class RegisterServlet extends HttpServlet {
         try {
             String login = req.getParameter("login");
             String password = req.getParameter("password");
-            boolean isAdmin = req.getParameter("admin") != null;
-            String token = securityService.register(login, password, isAdmin);
+            String token = securityService.register(login, password);
             Cookie cookie = new Cookie("user-token", token);
             resp.addCookie(cookie);
             resp.sendRedirect("/");

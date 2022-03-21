@@ -1,9 +1,10 @@
 package com.wasp.onlinestore.web.security;
 
 import com.wasp.onlinestore.exception.UserNotFoundException;
-import com.wasp.onlinestore.service.SessionService;
+import com.wasp.onlinestore.service.security.SecurityService;
 import com.wasp.onlinestore.service.security.entity.Role;
 import com.wasp.onlinestore.service.security.entity.Session;
+import com.wasp.onlinestore.web.util.SessionFetcher;
 import jakarta.servlet.Filter;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
@@ -15,10 +16,10 @@ import jakarta.servlet.http.HttpServletResponse;
 import java.io.IOException;
 
 public abstract class SecurityFilter implements Filter {
-    private final SessionService sessionService;
+    private final SecurityService securityService;
 
-    protected SecurityFilter(SessionService sessionService) {
-        this.sessionService = sessionService;
+    protected SecurityFilter(SecurityService securityService) {
+        this.securityService = securityService;
     }
 
     @Override
@@ -28,7 +29,7 @@ public abstract class SecurityFilter implements Filter {
 
         Cookie[] cookies = httpServletRequest.getCookies();
         try {
-            Session session = sessionService.getSession(cookies);
+            Session session = securityService.getSessionByToken(SessionFetcher.getUserToken(cookies));
 
             boolean isAuthorized = (session != null) && isRoleAllowed(session.getUser().getRole());
 
