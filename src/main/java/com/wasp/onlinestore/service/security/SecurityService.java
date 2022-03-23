@@ -7,22 +7,21 @@ import com.wasp.onlinestore.service.UserService;
 import com.wasp.onlinestore.service.security.entity.Role;
 import com.wasp.onlinestore.service.security.entity.Session;
 import java.time.LocalDateTime;
-import java.util.List;
 import java.util.Map;
 import java.util.UUID;
 import java.util.concurrent.ConcurrentHashMap;
-
-import static com.wasp.onlinestore.web.util.SessionFetcher.EXPIRE_IN_MINUTES;
 
 public class SecurityService {
     private final UserService userService;
     private final Map<String, Session> sessions;
     private final PasswordEncoder passwordEncoder;
+    private final long cookieTtlMinutes;
 
-    public SecurityService(UserService userService) {
+    public SecurityService(UserService userService, long cookieTtlMinutes) {
         this.userService = userService;
         this.sessions = new ConcurrentHashMap<>();
         this.passwordEncoder = new PasswordEncoder();
+        this.cookieTtlMinutes = cookieTtlMinutes;
     }
 
     //get the whole user with one sql query
@@ -35,7 +34,7 @@ public class SecurityService {
         User user = getUser(login);
         checkPasswordMatchesName(user, password);
         String token = generateToken();
-        sessions.put(token, new Session(token, LocalDateTime.now().plusMinutes(EXPIRE_IN_MINUTES), user));
+        sessions.put(token, new Session(token, LocalDateTime.now().plusMinutes(cookieTtlMinutes), user));
         return token;
     }
 
@@ -43,7 +42,7 @@ public class SecurityService {
         saveUser(login, password, passwordEncoder.getSalt());
         User user = getUser(login);
         String token = generateToken();
-        sessions.put(token, new Session(token, LocalDateTime.now().plusMinutes(EXPIRE_IN_MINUTES), user));
+        sessions.put(token, new Session(token, LocalDateTime.now().plusMinutes(cookieTtlMinutes), user));
         return token;
     }
 
@@ -59,6 +58,7 @@ public class SecurityService {
         return String.valueOf(UUID.randomUUID());
     }
 
+    //check if it's not expired too
     private boolean isTokenValid(String token) {
         return sessions.containsKey(token);
     }

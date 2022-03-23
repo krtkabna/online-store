@@ -49,11 +49,13 @@ public class Main {
         UserService userService = new UserService(userDao);
         ProductService productService = new ProductService(productDao);
         CartService cartService = new CartService(productService);
-        SecurityService securityService = new SecurityService(userService);
+        int cookieTtlSeconds = Integer.parseInt(properties.getProperty("cookie.ttl.seconds"));
+        long cookieTtlMinutes = cookieTtlSeconds / 60;
+        SecurityService securityService = new SecurityService(userService, cookieTtlMinutes);
 
         //config servlet
-        RegisterServlet registerServlet = new RegisterServlet(securityService);
-        LoginServlet loginServlet = new LoginServlet(securityService);
+        RegisterServlet registerServlet = new RegisterServlet(securityService, cookieTtlSeconds);
+        LoginServlet loginServlet = new LoginServlet(securityService, cookieTtlSeconds);
         CartServlet cartServlet = new CartServlet();
         CartAddServlet cartAddServlet = new CartAddServlet(cartService);
         CartDeleteServlet cartDeleteServlet = new CartDeleteServlet(cartService);

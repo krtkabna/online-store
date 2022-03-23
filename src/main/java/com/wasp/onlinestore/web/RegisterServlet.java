@@ -9,16 +9,15 @@ import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import java.io.IOException;
 
-import static com.wasp.onlinestore.web.util.SessionFetcher.EXPIRE_IN_SECONDS;
-
 public class RegisterServlet extends HttpServlet {
-    private static final int EXPIRE_IN = 15 * 60;
     private final SecurityService securityService;
     private final PageGenerator pageGenerator;
+    private final int cookieTtlSeconds;
 
-    public RegisterServlet(SecurityService securityService) {
+    public RegisterServlet(SecurityService securityService, int cookieTtlSeconds) {
         this.securityService = securityService;
         this.pageGenerator = new PageGenerator();
+        this.cookieTtlSeconds = cookieTtlSeconds;
     }
 
     @Override
@@ -33,7 +32,7 @@ public class RegisterServlet extends HttpServlet {
             String password = req.getParameter("password");
             String token = securityService.register(login, password);
             Cookie cookie = new Cookie("user-token", token);
-            cookie.setMaxAge(EXPIRE_IN_SECONDS);
+            cookie.setMaxAge(cookieTtlSeconds);
             resp.addCookie(cookie);
             resp.sendRedirect("/");
         } catch (DataAccessException e) {
