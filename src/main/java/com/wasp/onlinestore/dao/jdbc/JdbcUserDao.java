@@ -15,7 +15,7 @@ import java.util.Optional;
 public class JdbcUserDao implements UserDao {
     private static final UserRowMapper USER_ROW_MAPPER = new UserRowMapper();
     private static final String SELECT_BY_NAME_AND_PASSWORD = "SELECT id, name, role FROM users WHERE name=? AND password=?;";
-    private static final String SELECT_SALT_BY_NAME = "SELECT salt FROM users WHERE name=?;";
+    private static final String SELECT_USER_BY_NAME = "SELECT name, password, salt, role FROM users WHERE name=?;";
     private static final String INSERT = "INSERT INTO users (name, password, salt, role) VALUES(?, ?, ?, ?);";
     private final DataSource dataSource;
 
@@ -24,31 +24,12 @@ public class JdbcUserDao implements UserDao {
     }
 
     @Override
-    public Optional<User> getUserByNameAndPassword(String name, String password) {
-        try (Connection connection = dataSource.getConnection();
-             PreparedStatement statement = connection.prepareStatement(SELECT_BY_NAME_AND_PASSWORD)) {
-            statement.setString(1, name);
-            statement.setString(2, password);
-            try (ResultSet resultSet = statement.executeQuery()) {
-                if (resultSet.next()) {
-                    return Optional.of(USER_ROW_MAPPER.mapRow(resultSet));
-                } else {
-                    return Optional.empty();
-                }
-            }
-        } catch (SQLException e) {
-            throw new DataAccessException(
-                String.format("Could not find user with credentials: username=%s, password=%s", name, password), e);
-        }
-    }
-
-    @Override
-    public void saveUser(User user, String salt) {
+    public void saveUser(User user) {
         try (Connection connection = dataSource.getConnection();
              PreparedStatement statement = connection.prepareStatement(INSERT)) {
             statement.setString(1, user.getName());
             statement.setString(2, user.getPassword());
-            statement.setString(3, salt);
+            statement.setString(3, user.getSalt());
             statement.setObject(4, user.getRole().name().toUpperCase(), Types.OTHER);
             statement.execute();
         } catch (SQLException e) {
@@ -57,15 +38,16 @@ public class JdbcUserDao implements UserDao {
     }
 
     @Override
-    public Optional<String> getSalt(String name) {
+    public Optional<User> getUserByName(String name) {
         try (Connection connection = dataSource.getConnection();
-             PreparedStatement statement = connection.prepareStatement(SELECT_SALT_BY_NAME)) {
+             PreparedStatement statement = connection.prepareStatement(SELECT_USER_BY_NAME)) {
             statement.setString(1, name);
             try (ResultSet resultSet = statement.executeQuery()) {
                 if (resultSet.next()) {
-                    return Optional.of(resultSet.getString("salt"));
+                    return Optional.of(USER_ROW_MAPPER.mapRow(resultSet));
+                } else {
+                    return Optional.empty();
                 }
-                return Optional.empty();
             }
         } catch (SQLException e) {
             throw new DataAccessException("Could not find user by name: " + name, e);

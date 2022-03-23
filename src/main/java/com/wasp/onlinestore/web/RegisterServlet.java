@@ -12,10 +12,12 @@ import java.io.IOException;
 public class RegisterServlet extends HttpServlet {
     private final SecurityService securityService;
     private final PageGenerator pageGenerator;
+    private final int cookieTtlSeconds;
 
-    public RegisterServlet(SecurityService securityService) {
+    public RegisterServlet(SecurityService securityService, int cookieTtlSeconds) {
         this.securityService = securityService;
         this.pageGenerator = new PageGenerator();
+        this.cookieTtlSeconds = cookieTtlSeconds;
     }
 
     @Override
@@ -28,9 +30,9 @@ public class RegisterServlet extends HttpServlet {
         try {
             String login = req.getParameter("login");
             String password = req.getParameter("password");
-            boolean isAdmin = req.getParameter("admin") != null;
-            String token = securityService.register(login, password, isAdmin);
+            String token = securityService.register(login, password);
             Cookie cookie = new Cookie("user-token", token);
+            cookie.setMaxAge(cookieTtlSeconds);
             resp.addCookie(cookie);
             resp.sendRedirect("/");
         } catch (DataAccessException e) {

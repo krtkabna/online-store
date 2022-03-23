@@ -13,7 +13,7 @@ import java.io.IOException;
 import java.util.HashMap;
 import java.util.Map;
 
-import static com.wasp.onlinestore.web.util.ProductMapper.*;
+import static com.wasp.onlinestore.web.util.ProductMapper.getProductFromRequestBody;
 
 public class ProductUpdateServlet extends HttpServlet {
     private final ProductService productService = ServiceLocator.get(ProductService.class);

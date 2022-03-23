@@ -12,16 +12,11 @@ public class UserService {
         this.userDao = userDao;
     }
 
-    public String getSalt(String name) {
-        return userDao.getSalt(name)
-            .orElseThrow(() -> new UserNotFoundException("No user found by name: "+ name));
+    public Optional<User> getUserByName(String name) {
+        return userDao.getUserByName(name);
     }
 
-    public Optional<User> getUserByNameAndPassword(String name, String password) {
-        return userDao.getUserByNameAndPassword(name, password);
-    }
-
-    public void saveUser(User user, String salt) {
-        userDao.saveUser(user, salt);
+    public void saveUser(User user) {
+        userDao.saveUser(user);
     }
 }
