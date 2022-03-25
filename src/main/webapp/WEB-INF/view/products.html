@@ -109,11 +109,8 @@
         console.log(id);
         fetch(url + '?id=' + id, {
             method: 'POST',
-            // body: JSON.stringify({'id': id})
         }).then(result => {
             console.log('Success:', result);
-        // }).then(() => {
-        //     window.location.assign('/cart')
         }).catch(err => {
             console.error(err)
         })

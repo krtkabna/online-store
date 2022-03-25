@@ -3,10 +3,14 @@ package com.wasp.onlinestore.service;
 import com.wasp.onlinestore.dao.ProductDao;
 import com.wasp.onlinestore.entity.Product;
 import com.wasp.onlinestore.exception.ProductNotFoundException;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
 
+@Service
 public class ProductService {
     private final ProductDao productDao;
 
+    @Autowired
     public ProductService(ProductDao productDao) {
         this.productDao = productDao;
     }

@@ -4,6 +4,8 @@ import com.wasp.onlinestore.dao.ProductDao;
 import com.wasp.onlinestore.dao.jdbc.mapper.ProductRowMapper;
 import com.wasp.onlinestore.entity.Product;
 import com.wasp.onlinestore.exception.DataAccessException;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Repository;
 import javax.sql.DataSource;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
@@ -14,6 +16,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
+@Repository
 public class JdbcProductDao implements ProductDao {
     private static final ProductRowMapper PRODUCT_ROW_MAPPER = new ProductRowMapper();
     private static final String SELECT_ALL = "SELECT id, name, price, creation_date FROM products ORDER BY id ASC;";
@@ -23,6 +26,7 @@ public class JdbcProductDao implements ProductDao {
     private static final String UPDATE_NAME_AND_PRICE = "UPDATE products SET name=?, price=? WHERE id=?;";
     private final DataSource dataSource;
 
+    @Autowired
     public JdbcProductDao(DataSource dataSource) {
         this.dataSource = dataSource;
     }
