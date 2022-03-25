@@ -64,7 +64,7 @@
             <td>${product.id}</td>
             <td>${product.name}</td>
             <td>$${product.price}</td>
-            <td>${product.creationDate}</td>
+            <td>${product.creationDate?datetime.iso?string('dd MMM yyyy')}</td>
             <#if role! == "USER" || role! == "ADMIN">
                 <td style="white-space: nowrap;">
                     <#if role! == "ADMIN">
@@ -75,9 +75,6 @@
                             <i class="fas fa-trash action"></i>
                         </a>
                     </#if>
-<!--                        <button class="btn btn-success" type="submit" formaction="/cart">-->
-<!--                            <i class="fas fa-plus action"></i>-->
-<!--                        </button>-->
                         <a class="btn btn-success" onclick="addToCart(${product.id})">
                             <i class="fas fa-plus action"></i>
                         </a>
