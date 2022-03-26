@@ -1,23 +1,22 @@
 package com.wasp.onlinestore.web.util;
 
-import com.google.gson.Gson;
-import com.google.gson.JsonParseException;
 import com.wasp.onlinestore.entity.Product;
 import com.wasp.onlinestore.exception.ProductParseException;
 import lombok.experimental.UtilityClass;
+import org.codehaus.jackson.map.ObjectMapper;
+import java.io.IOException;
 import java.io.StringReader;
 
 @UtilityClass
 public class ProductMapper {
-    public static final Gson GSON = new Gson();
+    private static final ObjectMapper MAPPER = new ObjectMapper();
 
     public Product getProductFromRequestBody(String requestBody) {
+        StringReader body = new StringReader(requestBody);
         try {
-            StringReader body = new StringReader(requestBody);
-            //use jackson
-            return GSON.fromJson(body, Product.class);
-        } catch (JsonParseException e) {
-            throw new ProductParseException("Request body structure is invalid or it contains invalid values", e);
+            return MAPPER.readValue(body, Product.class);
+        } catch (IOException e) {
+            throw new ProductParseException("Could not parse Product json: " + body, e);
         }
     }
 }
