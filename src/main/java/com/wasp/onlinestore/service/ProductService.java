@@ -3,11 +3,14 @@ package com.wasp.onlinestore.service;
 import com.wasp.onlinestore.dao.ProductDao;
 import com.wasp.onlinestore.entity.Product;
 import com.wasp.onlinestore.exception.ProductNotFoundException;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 @Service
 public class ProductService {
+    private static final Logger LOGGER = LoggerFactory.getLogger(ProductService.class);
     private final ProductDao productDao;
 
     @Autowired
@@ -32,6 +35,7 @@ public class ProductService {
     }
 
     public int update(Product product) {
+        LOGGER.warn("Entered productService.update()");
         return productDao.update(product);
     }
 }

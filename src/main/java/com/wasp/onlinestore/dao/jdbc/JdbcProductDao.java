@@ -4,6 +4,8 @@ import com.wasp.onlinestore.dao.ProductDao;
 import com.wasp.onlinestore.dao.jdbc.mapper.ProductRowMapper;
 import com.wasp.onlinestore.entity.Product;
 import com.wasp.onlinestore.exception.DataAccessException;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
 import javax.sql.DataSource;
@@ -18,6 +20,7 @@ import java.util.Optional;
 
 @Repository
 public class JdbcProductDao implements ProductDao {
+    private static final Logger LOGGER = LoggerFactory.getLogger(JdbcProductDao.class);
     private static final ProductRowMapper PRODUCT_ROW_MAPPER = new ProductRowMapper();
     private static final String SELECT_ALL = "SELECT id, name, price, creation_date FROM products ORDER BY id ASC;";
     private static final String SELECT_BY_ID = "SELECT id, name, price FROM products WHERE id=?;";
@@ -83,9 +86,9 @@ public class JdbcProductDao implements ProductDao {
             statement.setString(1, product.getName());
             statement.setDouble(2, product.getPrice());
             statement.setInt(3, product.getId());
+            LOGGER.warn(product.toString());
             return statement.executeUpdate();
-        } catch (
-            SQLException e) {
+        } catch (SQLException e) {
             throw new DataAccessException("SQL error occurred on UPDATE: " + UPDATE_NAME_AND_PRICE, e);
         }
 

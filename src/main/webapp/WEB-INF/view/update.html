@@ -11,7 +11,7 @@
     <div class="input-group-prepend">
         <div class="input-group-text" id="id" name="id">${product.id}</div>
     </div>
-    <input class="form-control" id="name" min="0" name="name" type="text"
+    <input class="form-control" id="name" name="name" type="text"
            value="${product.name}">
     <input class="form-control" id="price" min="0.0" name="price" type="number"
            value="${product.price}">
@@ -22,12 +22,16 @@
 <script>
     function update() {
         let id = document.getElementById('id').textContent;
-        let url = '/product/update/' + id;
+        // let url = '/product/update/' + id;
+        let url = '/product/update';
         let name = document.getElementById('name').value;
         let price = document.getElementById('price').value;
         console.log(id.value, name, price);
         fetch(url, {
             method: 'PUT',
+            headers: {
+                'Content-Type': 'application/json'
+            },
             body: JSON.stringify({'id': id, 'name': name, 'price': price})
         }).then(result => {
             console.log('Success:', result);

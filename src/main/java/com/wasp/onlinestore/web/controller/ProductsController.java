@@ -4,8 +4,7 @@ import com.wasp.onlinestore.service.ProductService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.ModelMap;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.GetMapping;
 
 @Controller
 public class ProductsController {
@@ -16,7 +15,7 @@ public class ProductsController {
         this.productService = productService;
     }
 
-    @RequestMapping(value = "/products", method = RequestMethod.GET)
+    @GetMapping({"/", "/products"})
     public String getAll(ModelMap model) {
         model.addAttribute("products", productService.getAll());
         return "products";

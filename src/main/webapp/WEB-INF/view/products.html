@@ -22,22 +22,17 @@
         <li class="nav-item active">
             <a class="nav-link" href="/">Home <span class="sr-only">(current)</span></a>
         </li>
-        <#if role! == "ADMIN">
         <li class="nav-item">
             <a class="nav-link" href="/product/add">Add Product</a>
         </li>
-        </#if>
     </ul>
     <ul class="navbar-nav ml-auto">
-        <#if role! == "USER" || role! == "ADMIN">
         <form class="form-inline">
             <a class="btn btn-outline-info my-2 my-sm-0" href="/cart">Cart</a>
         </form>
-        <#else>
         <form class="form-inline">
             <a class="btn btn-outline-info my-2 my-sm-0" href="/login">Log In</a>
         </form>
-        </#if>
     </ul>
 </nav>
 <div class="container">
@@ -53,9 +48,7 @@
             <th>Name</th>
             <th>Price</th>
             <th>Created</th>
-            <#if role! == "USER" || role! == "ADMIN">
-                <th>Action</th>
-            </#if>
+            <th>Action</th>
         </tr>
         </thead>
         <tbody>
@@ -65,21 +58,17 @@
             <td>${product.name}</td>
             <td>$${product.price}</td>
             <td>${product.creationDate?datetime.iso?string('dd MMM yyyy')}</td>
-            <#if role! == "USER" || role! == "ADMIN">
-                <td style="white-space: nowrap;">
-                    <#if role! == "ADMIN">
-                        <a class="btn btn-warning" href="/product/update/${product.id}">
-                            <i class="fas fa-pen action"></i>
-                        </a>
-                        <a class="btn btn-danger" onclick="remove(${product.id})">
-                            <i class="fas fa-trash action"></i>
-                        </a>
-                    </#if>
-                        <a class="btn btn-success" onclick="addToCart(${product.id})">
-                            <i class="fas fa-plus action"></i>
-                        </a>
-                </td>
-            </#if>
+            <td style="white-space: nowrap;">
+                <a class="btn btn-warning" href="/product/update/${product.id}">
+                    <i class="fas fa-pen action"></i>
+                </a>
+                <a class="btn btn-danger" onclick="remove(${product.id})">
+                    <i class="fas fa-trash action"></i>
+                </a>
+                <a class="btn btn-success" onclick="addToCart(${product.id})">
+                    <i class="fas fa-plus action"></i>
+                </a>
+            </td>
         </tr>
         </#list>
         </tbody>
@@ -93,7 +82,7 @@
             fetch(url + '?id=' + id, {
                 method: 'DELETE'
             }).then(() => {
-                console.log('removed');
+                console.log('removed')
             }).then(() => {
                 window.location.assign('/')
             }).catch(err => {
