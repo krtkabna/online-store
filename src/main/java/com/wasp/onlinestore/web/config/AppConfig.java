@@ -1,6 +1,7 @@
 package com.wasp.onlinestore.web.config;
 
 import com.wasp.onlinestore.config.PropertyReader;
+import com.wasp.onlinestore.service.security.SecurityService;
 import org.postgresql.ds.PGSimpleDataSource;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -10,6 +11,24 @@ import java.util.Properties;
 
 @Configuration
 public class AppConfig {
+    private static final PropertyReader PROPERTY_READER = new PropertyReader("/properties/application.properties");
+
+    @Bean
+    public PGSimpleDataSource pgSimpleDataSource() {
+        Properties properties = PROPERTY_READER.getProperties();
+
+        PGSimpleDataSource pgSimpleDataSource = new PGSimpleDataSource();
+        pgSimpleDataSource.setUrl(properties.getProperty("db_url"));
+        pgSimpleDataSource.setUser(properties.getProperty("username"));
+        pgSimpleDataSource.setPassword(properties.getProperty("password"));
+        return pgSimpleDataSource;
+    }
+
+    @Bean
+    public int cookieTtlSeconds() {
+        Properties properties = PROPERTY_READER.getProperties();
+        return Integer.parseInt(properties.getProperty("cookie.ttl.seconds"));
+    }
 
     @Bean
     public FreeMarkerViewResolver freemarkerViewResolver() {
@@ -26,17 +45,4 @@ public class AppConfig {
         freeMarkerConfigurer.setTemplateLoaderPath("/WEB-INF/view/");
         return freeMarkerConfigurer;
     }
-
-    @Bean
-    public PGSimpleDataSource pgSimpleDataSource() {
-        PropertyReader propertyReader = new PropertyReader("/properties/application.properties");
-        Properties properties = propertyReader.getProperties();
-
-        PGSimpleDataSource pgSimpleDataSource = new PGSimpleDataSource();
-        pgSimpleDataSource.setUrl(properties.getProperty("db_url"));
-        pgSimpleDataSource.setUser(properties.getProperty("username"));
-        pgSimpleDataSource.setPassword(properties.getProperty("password"));
-        return pgSimpleDataSource;
-    }
-
 }

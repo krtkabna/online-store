@@ -6,25 +6,30 @@ import com.wasp.onlinestore.exception.UserNotFoundException;
 import com.wasp.onlinestore.service.UserService;
 import com.wasp.onlinestore.service.security.entity.Role;
 import com.wasp.onlinestore.service.security.entity.Session;
+import lombok.Getter;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
 import java.time.LocalDateTime;
 import java.util.Map;
 import java.util.UUID;
 import java.util.concurrent.ConcurrentHashMap;
 
+@Service
+@Getter
 public class SecurityService {
     private final UserService userService;
     private final Map<String, Session> sessions;
     private final PasswordEncoder passwordEncoder;
     private final long cookieTtlMinutes;
 
-    public SecurityService(UserService userService, long cookieTtlMinutes) {
+    @Autowired
+    public SecurityService(UserService userService, int cookieTtlSeconds) {
         this.userService = userService;
         this.sessions = new ConcurrentHashMap<>();
         this.passwordEncoder = new PasswordEncoder();
-        this.cookieTtlMinutes = cookieTtlMinutes;
+        this.cookieTtlMinutes = cookieTtlSeconds / 60;
     }
 
-    //get the whole user with one sql query
     public User getUser(String name) {
         return userService.getUserByName(name)
             .orElseThrow(() -> new UserNotFoundException("Could not find user by name: " + name));
