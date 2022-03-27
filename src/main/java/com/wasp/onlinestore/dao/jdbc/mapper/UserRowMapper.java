@@ -7,13 +7,15 @@ import java.sql.SQLException;
 
 public class UserRowMapper {
     public User mapRow(ResultSet resultSet) throws SQLException {
-        int id = resultSet.getInt("id");
         String name = resultSet.getString("name");
+        String password = resultSet.getString("password");
+        String salt = resultSet.getString("salt");
         Role role = Role.valueOf(resultSet.getString("role"));
 
         return User.builder()
-            .id(id)
             .name(name)
+            .password(password)
+            .salt(salt)
             .role(role)
             .build();
     }

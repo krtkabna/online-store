@@ -20,14 +20,14 @@ public class SecurityService {
     private final UserService userService;
     private final Map<String, Session> sessions;
     private final PasswordEncoder passwordEncoder;
-    private final long cookieTtlMinutes;
+    private final int cookieTtlSeconds;
 
     @Autowired
     public SecurityService(UserService userService, int cookieTtlSeconds) {
         this.userService = userService;
         this.sessions = new ConcurrentHashMap<>();
         this.passwordEncoder = new PasswordEncoder();
-        this.cookieTtlMinutes = cookieTtlSeconds / 60;
+        this.cookieTtlSeconds = cookieTtlSeconds;
     }
 
     public User getUser(String name) {
@@ -39,7 +39,7 @@ public class SecurityService {
         User user = getUser(login);
         checkPasswordMatchesName(user, password);
         String token = generateToken();
-        sessions.put(token, new Session(token, LocalDateTime.now().plusMinutes(cookieTtlMinutes), user));
+        sessions.put(token, new Session(token, LocalDateTime.now().plusMinutes(getCookieTtlMinutes()), user));
         return token;
     }
 
@@ -47,7 +47,7 @@ public class SecurityService {
         saveUser(login, password, passwordEncoder.getSalt());
         User user = getUser(login);
         String token = generateToken();
-        sessions.put(token, new Session(token, LocalDateTime.now().plusMinutes(cookieTtlMinutes), user));
+        sessions.put(token, new Session(token, LocalDateTime.now().plusMinutes(getCookieTtlMinutes()), user));
         return token;
     }
 
@@ -57,6 +57,10 @@ public class SecurityService {
         } else {
             return null;
         }
+    }
+
+    private long getCookieTtlMinutes() {
+        return cookieTtlSeconds / 60;
     }
 
     private String generateToken() {

@@ -22,9 +22,9 @@ import org.springframework.web.servlet.ModelAndView;
 @Controller
 @RequestMapping("/product")
 public class ProductCrudController {
-    private static final Logger LOGGER = LoggerFactory.getLogger(ProductCrudController.class);
-    public static final String REDIRECT_PRODUCTS = "redirect:/products";
+    public static final String REDIRECT_PRODUCTS = "redirect:/";
     public static final String PRODUCT_ATTRIBUTE = "product";
+    private static final Logger LOGGER = LoggerFactory.getLogger(ProductCrudController.class);
     private final ProductService productService;
 
     @Autowired
@@ -58,7 +58,6 @@ public class ProductCrudController {
 
     @DeleteMapping("delete")
     public String deleteProduct(@RequestParam int id) {
-        LOGGER.debug(productService.getById(id).toString());
         productService.delete(id);
         return REDIRECT_PRODUCTS;
     }

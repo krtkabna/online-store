@@ -5,10 +5,12 @@ import com.wasp.onlinestore.service.security.SecurityService;
 import com.wasp.onlinestore.service.security.entity.Role;
 import com.wasp.onlinestore.service.security.entity.Session;
 import com.wasp.onlinestore.web.util.SessionFetcher;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Component;
+import org.springframework.context.ApplicationContextException;
+import org.springframework.web.context.WebApplicationContext;
+import org.springframework.web.context.support.WebApplicationContextUtils;
 import javax.servlet.Filter;
 import javax.servlet.FilterChain;
+import javax.servlet.ServletContext;
 import javax.servlet.ServletException;
 import javax.servlet.ServletRequest;
 import javax.servlet.ServletResponse;
@@ -17,19 +19,15 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 
-@Component
 public abstract class SecurityFilter implements Filter {
-    private final SecurityService securityService;
-
-    @Autowired
-    protected SecurityFilter(SecurityService securityService) {
-        this.securityService = securityService;
-    }
+    private SecurityService securityService;
 
     @Override
     public void doFilter(ServletRequest request, ServletResponse response, FilterChain chain) throws IOException, ServletException {
         HttpServletRequest httpServletRequest = (HttpServletRequest) request;
         HttpServletResponse httpServletResponse = (HttpServletResponse) response;
+
+        autowireSecurityService(httpServletRequest);
 
         Cookie[] cookies = httpServletRequest.getCookies();
         try {
@@ -50,4 +48,12 @@ public abstract class SecurityFilter implements Filter {
     }
 
     public abstract boolean isRoleAllowed(Role role);
+
+    private void autowireSecurityService(HttpServletRequest httpServletRequest) {
+        ServletContext servletContext = httpServletRequest.getServletContext();
+        WebApplicationContext webApplicationContext = WebApplicationContextUtils.getWebApplicationContext(servletContext);
+        if (webApplicationContext != null) {
+            securityService = webApplicationContext.getBean(SecurityService.class);
+        } else throw new ApplicationContextException("Could not get application context");
+    }
 }

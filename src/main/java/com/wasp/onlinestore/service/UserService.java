@@ -2,7 +2,6 @@ package com.wasp.onlinestore.service;
 
 import com.wasp.onlinestore.dao.UserDao;
 import com.wasp.onlinestore.entity.User;
-import com.wasp.onlinestore.exception.UserNotFoundException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import java.util.Optional;

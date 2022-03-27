@@ -105,9 +105,9 @@
     }
 
     function addToCart(id) {
-        let url = '/cart/add';
+        let url = '/cart/add' + '?id=' + id;
         console.log(id);
-        fetch(url + '?id=' + id, {
+        fetch(url, {
             method: 'POST',
         }).then(result => {
             console.log('Success:', result);

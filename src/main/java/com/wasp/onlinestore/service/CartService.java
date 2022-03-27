@@ -2,14 +2,18 @@ package com.wasp.onlinestore.service;
 
 import com.wasp.onlinestore.entity.CartItem;
 import com.wasp.onlinestore.entity.Product;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
 import java.util.List;
 import java.util.Map;
 import java.util.function.Consumer;
 import java.util.function.Predicate;
 
+@Service
 public class CartService {
     private final ProductService productService;
 
+    @Autowired
     public CartService(ProductService productService) {
         this.productService = productService;
     }

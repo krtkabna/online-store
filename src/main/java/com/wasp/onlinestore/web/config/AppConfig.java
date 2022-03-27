@@ -1,7 +1,6 @@
 package com.wasp.onlinestore.web.config;
 
 import com.wasp.onlinestore.config.PropertyReader;
-import com.wasp.onlinestore.service.security.SecurityService;
 import org.postgresql.ds.PGSimpleDataSource;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;

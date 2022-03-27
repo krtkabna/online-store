@@ -17,7 +17,6 @@ import java.util.Optional;
 @Repository
 public class JdbcUserDao implements UserDao {
     private static final UserRowMapper USER_ROW_MAPPER = new UserRowMapper();
-    private static final String SELECT_BY_NAME_AND_PASSWORD = "SELECT id, name, role FROM users WHERE name=? AND password=?;";
     private static final String SELECT_USER_BY_NAME = "SELECT name, password, salt, role FROM users WHERE name=?;";
     private static final String INSERT = "INSERT INTO users (name, password, salt, role) VALUES(?, ?, ?, ?);";
     private final DataSource dataSource;
