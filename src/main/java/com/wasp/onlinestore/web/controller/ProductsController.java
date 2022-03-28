@@ -4,20 +4,16 @@ import com.wasp.onlinestore.service.ProductService;
 import com.wasp.onlinestore.service.security.entity.Role;
 import com.wasp.onlinestore.service.security.entity.Session;
 import com.wasp.onlinestore.web.util.SessionFetcher;
-import org.springframework.beans.factory.annotation.Autowired;
+import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.ModelMap;
 import org.springframework.web.bind.annotation.GetMapping;
 import javax.servlet.http.HttpServletRequest;
 
 @Controller
+@RequiredArgsConstructor
 public class ProductsController {
     private final ProductService productService;
-
-    @Autowired
-    public ProductsController(ProductService productService) {
-        this.productService = productService;
-    }
 
     @GetMapping("/")
     public String getAll(HttpServletRequest req, ModelMap model) {

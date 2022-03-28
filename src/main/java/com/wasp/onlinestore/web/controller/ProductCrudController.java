@@ -3,9 +3,7 @@ package com.wasp.onlinestore.web.controller;
 import com.wasp.onlinestore.entity.Product;
 import com.wasp.onlinestore.service.ProductService;
 import com.wasp.onlinestore.web.util.ProductMapper;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Autowired;
+import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.ModelMap;
 import org.springframework.web.bind.annotation.DeleteMapping;
@@ -21,16 +19,11 @@ import org.springframework.web.servlet.ModelAndView;
 
 @Controller
 @RequestMapping("/product")
+@RequiredArgsConstructor
 public class ProductCrudController {
     public static final String REDIRECT_PRODUCTS = "redirect:/";
     public static final String PRODUCT_ATTRIBUTE = "product";
-    private static final Logger LOGGER = LoggerFactory.getLogger(ProductCrudController.class);
     private final ProductService productService;
-
-    @Autowired
-    public ProductCrudController(ProductService productService) {
-        this.productService = productService;
-    }
 
     @GetMapping("add")
     public ModelAndView showAddProductForm() {
@@ -50,6 +43,7 @@ public class ProductCrudController {
     }
 
     @PutMapping(value = "update")
+    //todo make Spring parse it
     public String update(@RequestBody String productJson) {
         Product product = ProductMapper.getProductFromRequestBody(productJson);
         productService.update(product);

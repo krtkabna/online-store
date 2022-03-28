@@ -3,20 +3,15 @@ package com.wasp.onlinestore.service;
 import com.wasp.onlinestore.dao.ProductDao;
 import com.wasp.onlinestore.entity.Product;
 import com.wasp.onlinestore.exception.ProductNotFoundException;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Autowired;
+import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 
+@Slf4j //TODO logs
 @Service
+@RequiredArgsConstructor
 public class ProductService {
-    private static final Logger LOGGER = LoggerFactory.getLogger(ProductService.class);
     private final ProductDao productDao;
-
-    @Autowired
-    public ProductService(ProductDao productDao) {
-        this.productDao = productDao;
-    }
 
     public Iterable<Product> getAll() {
         return productDao.findAll();
@@ -35,7 +30,7 @@ public class ProductService {
     }
 
     public int update(Product product) {
-        LOGGER.warn("Entered productService.update()");
+        log.info("Entered productService.update()");
         return productDao.update(product);
     }
 }

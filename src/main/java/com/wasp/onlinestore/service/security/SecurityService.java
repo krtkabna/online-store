@@ -8,6 +8,8 @@ import com.wasp.onlinestore.service.security.entity.Role;
 import com.wasp.onlinestore.service.security.entity.Session;
 import lombok.Getter;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.context.annotation.PropertySource;
 import org.springframework.stereotype.Service;
 import java.time.LocalDateTime;
 import java.util.Map;
@@ -16,18 +18,20 @@ import java.util.concurrent.ConcurrentHashMap;
 
 @Service
 @Getter
+@PropertySource("classpath:/properties/application.properties")
 public class SecurityService {
     private final UserService userService;
     private final Map<String, Session> sessions;
     private final PasswordEncoder passwordEncoder;
-    private final int cookieTtlSeconds;
+
+    @Value("${session.ttl.seconds}")
+    private int sessionTtlSeconds;
 
     @Autowired
-    public SecurityService(UserService userService, int cookieTtlSeconds) {
+    public SecurityService(UserService userService) {
         this.userService = userService;
         this.sessions = new ConcurrentHashMap<>();
         this.passwordEncoder = new PasswordEncoder();
-        this.cookieTtlSeconds = cookieTtlSeconds;
     }
 
     public User getUser(String name) {
@@ -60,7 +64,7 @@ public class SecurityService {
     }
 
     private long getCookieTtlMinutes() {
-        return cookieTtlSeconds / 60;
+        return sessionTtlSeconds / 60;
     }
 
     private String generateToken() {

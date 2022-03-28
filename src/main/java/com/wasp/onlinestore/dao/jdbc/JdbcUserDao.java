@@ -4,7 +4,7 @@ import com.wasp.onlinestore.dao.UserDao;
 import com.wasp.onlinestore.dao.jdbc.mapper.UserRowMapper;
 import com.wasp.onlinestore.entity.User;
 import com.wasp.onlinestore.exception.DataAccessException;
-import org.springframework.beans.factory.annotation.Autowired;
+import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Repository;
 import javax.sql.DataSource;
 import java.sql.Connection;
@@ -15,16 +15,12 @@ import java.sql.Types;
 import java.util.Optional;
 
 @Repository
+@RequiredArgsConstructor
 public class JdbcUserDao implements UserDao {
     private static final UserRowMapper USER_ROW_MAPPER = new UserRowMapper();
     private static final String SELECT_USER_BY_NAME = "SELECT name, password, salt, role FROM users WHERE name=?;";
     private static final String INSERT = "INSERT INTO users (name, password, salt, role) VALUES(?, ?, ?, ?);";
     private final DataSource dataSource;
-
-    @Autowired
-    public JdbcUserDao(DataSource dataSource) {
-        this.dataSource = dataSource;
-    }
 
     @Override
     public void saveUser(User user) {
