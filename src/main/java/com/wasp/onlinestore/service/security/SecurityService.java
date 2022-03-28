@@ -69,7 +69,7 @@ public class SecurityService {
 
     //check if it's not expired too
     private boolean isTokenValid(String token) {
-        return sessions.containsKey(token);
+        return sessions.containsKey(token) && sessions.get(token).getExpireDateTime().isAfter(LocalDateTime.now());
     }
 
     private void saveUser(String login, String password, String salt) {
