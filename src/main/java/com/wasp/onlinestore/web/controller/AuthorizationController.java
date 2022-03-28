@@ -1,50 +1,54 @@
 package com.wasp.onlinestore.web.controller;
 
-import com.wasp.onlinestore.entity.CartItem;
-import com.wasp.onlinestore.exception.UserNotFoundException;
 import com.wasp.onlinestore.service.security.SecurityService;
-import com.wasp.onlinestore.web.util.SessionFetcher;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Controller;
-import org.springframework.ui.ModelMap;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-import java.util.List;
 
 @Controller
 @RequiredArgsConstructor
-public class LoginController {
+public class AuthorizationController {
+    private static final String LOGIN_VIEW = "login";
+    private static final String REGISTER_VIEW = "signup";
     private static final String REDIRECT_PRODUCTS = "redirect:/";
     private static final String LOGIN = "login";
+    private static final String PASSWORD = "password";
+    private static final String USER_TOKEN = "user-token";
     private final SecurityService securityService;
 
     @GetMapping("/login")
     public String getLoginPage() {
-        return LOGIN;
+        return LOGIN_VIEW;
     }
 
     @PostMapping("/login")
     public String login(HttpServletRequest req, HttpServletResponse resp) {
         String login = req.getParameter(LOGIN);
-        String password = req.getParameter("password");
+        String password = req.getParameter(PASSWORD);
         String token = securityService.login(login, password);
-        Cookie cookie = new Cookie("user-token", token);
+        Cookie cookie = new Cookie(USER_TOKEN, token);
         cookie.setMaxAge(securityService.getSessionTtlSeconds());
         resp.addCookie(cookie);
         return REDIRECT_PRODUCTS;
     }
 
-    @GetMapping("/cart")
-    public String cart(HttpServletRequest req, ModelMap model) {
-        try {
-            List<CartItem> cart = SessionFetcher.getSession(req).getCart();
-            model.addAttribute("cart", cart);
-            return "cart";
-        } catch (UserNotFoundException e) {
-            return LOGIN;
-        }
+    @GetMapping("/register")
+    public String getRegisterPage() {
+        return REGISTER_VIEW;
+    }
+
+    @PostMapping("/register")
+    public String register(HttpServletRequest req, HttpServletResponse resp) {
+        String login = req.getParameter(LOGIN);
+        String password = req.getParameter(PASSWORD);
+        String token = securityService.register(login, password);
+        Cookie cookie = new Cookie(USER_TOKEN, token);
+        cookie.setMaxAge(securityService.getSessionTtlSeconds());
+        resp.addCookie(cookie);
+        return REDIRECT_PRODUCTS;
     }
 }
