@@ -1,6 +1,5 @@
 package com.wasp.onlinestore.dao.config;
 
-import lombok.extern.slf4j.Slf4j;
 import org.jasypt.util.text.BasicTextEncryptor;
 import org.postgresql.ds.PGSimpleDataSource;
 import org.springframework.beans.factory.annotation.Value;
@@ -11,7 +10,8 @@ import org.springframework.context.annotation.PropertySource;
 @Configuration
 @PropertySource("classpath:/properties/application.properties")
 public class JdbcConfig {
-    private static final String SALT = "i-like-cookies";
+    @Value("${PASSWORD_SECRET}")
+    private String passwordSecret;
 
     @Bean
     public PGSimpleDataSource pgSimpleDataSource(@Value("${db.url}") String dbUrl,
@@ -26,7 +26,7 @@ public class JdbcConfig {
 
     private String getDecryptedPassword(String password) {
         BasicTextEncryptor decryptor = new BasicTextEncryptor();
-        decryptor.setPasswordCharArray(SALT.toCharArray());
+        decryptor.setPasswordCharArray(passwordSecret.toCharArray());
         return decryptor.decrypt(password);
     }
 }
