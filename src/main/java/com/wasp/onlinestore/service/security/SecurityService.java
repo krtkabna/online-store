@@ -2,7 +2,6 @@ package com.wasp.onlinestore.service.security;
 
 import com.wasp.onlinestore.entity.User;
 import com.wasp.onlinestore.exception.PasswordMismatchException;
-import com.wasp.onlinestore.exception.UserNotFoundException;
 import com.wasp.onlinestore.service.UserService;
 import com.wasp.onlinestore.service.security.entity.Role;
 import com.wasp.onlinestore.service.security.entity.Session;
@@ -17,13 +16,13 @@ import java.util.UUID;
 import java.util.concurrent.ConcurrentHashMap;
 
 @Service
-@Getter
 @PropertySource("classpath:/properties/application.properties")
 public class SecurityService {
     private final UserService userService;
     private final Map<String, Session> sessions;
     private final PasswordEncoder passwordEncoder;
 
+    @Getter
     @Value("${session.ttl.seconds}")
     private int sessionTtlSeconds;
 
@@ -34,13 +33,8 @@ public class SecurityService {
         this.passwordEncoder = new PasswordEncoder();
     }
 
-    public User getUser(String name) {
-        return userService.getUserByName(name)
-            .orElseThrow(() -> new UserNotFoundException("Could not find user by name: " + name));
-    }
-
     public String login(String login, String password) {
-        User user = getUser(login);
+        User user = userService.getUserByName(login);
         checkPasswordMatchesName(user, password);
         String token = generateToken();
         sessions.put(token, new Session(token, LocalDateTime.now().plusMinutes(getCookieTtlMinutes()), user));
@@ -49,7 +43,7 @@ public class SecurityService {
 
     public String register(String login, String password) {
         saveUser(login, password, passwordEncoder.getSalt());
-        User user = getUser(login);
+        User user = userService.getUserByName(login);
         String token = generateToken();
         sessions.put(token, new Session(token, LocalDateTime.now().plusMinutes(getCookieTtlMinutes()), user));
         return token;

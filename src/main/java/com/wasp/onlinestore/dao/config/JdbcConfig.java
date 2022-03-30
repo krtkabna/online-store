@@ -6,6 +6,9 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.PropertySource;
+import org.springframework.jdbc.core.JdbcTemplate;
+import org.springframework.jdbc.core.namedparam.NamedParameterJdbcTemplate;
+import javax.sql.DataSource;
 
 @Configuration
 @PropertySource("classpath:/properties/application.properties")
@@ -22,6 +25,11 @@ public class JdbcConfig {
         pgSimpleDataSource.setUser(username);
         pgSimpleDataSource.setPassword(getDecryptedPassword(password));
         return pgSimpleDataSource;
+    }
+
+    @Bean
+    public NamedParameterJdbcTemplate namedParameterJdbcTemplate(DataSource dataSource) {
+        return new NamedParameterJdbcTemplate(dataSource);
     }
 
     private String getDecryptedPassword(String password) {
